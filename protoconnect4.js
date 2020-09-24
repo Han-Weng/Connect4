@@ -1,117 +1,91 @@
 let xLength = 7
 let yLength = 6
 let gameBoard=[]
-let turn  = "X"
+let turn  = "red"
+let size =  50
 
 function main(){
 
 
 }
 
-
-
-
 function checkHorizontal(row,col){
-  for (var i = 0; i <= yLength; i++) {
-    for (var j = 0; j <= xLength-2; j++) {
-    	if (gameBoard[i][j] == gameBoard[i][j+1]){
-    		if (gameBoard[i][j+1] == gameBoard[i][j+2]){
-    			if (gameBoard[i][j+2] == gameBoard[i][j+3]){
-    				return True
-    			}
-     		}
-    	}
+  for (var i = col-3; i <= col ; i++) {
+    if ((i >0 || i < 7)){
+      if ((gameBoard[row][i]!="whites")&&(compareHorizontal(row,i,row ,i+1) == 4)){
+        return true
+      }
     }
-	}
+  }
 }
 
-function checkVeritcal(){
-  for (var i = 0; i <= yLength; i++) {
-    for (var j = 0; j <= xLengthv; j++) {
-    	if (gameBoard[i][j] == gameBoard[i+1][j]){
-    		if (gameBoard[i+1][j] == gameBoard[i+2][j]){
-    			if (gameBoard[i+2][j] == gameBoard[i+3][j]){
-    				return True
-    			}
-     		}
-    	}
-    }
-	}
+function compareHorizontal(row,col,row2,col2){
+    if ((col2 < 7)){
+  if (gameBoard[row][col] == gameBoard[row][col2]){
+    return 1+compareHorizontal(row2,col2,row2,col2+1)
+  }
+}
+  return 0
 }
 
 function checkRightDiagonal(){}
 function checkLeftDiagonal(){}
-
 function winnerAlgorithm(col,row){
-	checkHorizontal()
-	if (gameBoard[4].includes("r")||gameBoard[4].includes("y")){
-
-  }
-
-
+	//var checkDirection = [checkHorizontal(), checktVertical(),
+  //                    checkLeftDiagonal(), checkRightDiagonal()]
+  //for (var i = 0; i <= checkDirection.length ; i++) {
+    if (checkHorizontal(row,col)){
+     document.getElementById("winner").innerHTML = turn + " is Winner!!!!";
+    }
+  //}
 }
 
-function draw(){
-  var canvas = document.getElementById("myCanvas");
+
+function drawGrid(){
+
+  var canvas = document.getElementById("grid");
   var ctx = canvas.getContext("2d");
-  var coords = [ [50,100], [100,100], [150,100] ];
-
-  for(var i = 0; i < coords.length; i++){
-
-      ctx.beginPath();
-      ctx.arc(coords[i][0], coords[i][1], 10, 0, 2 * Math.PI);
-      ctx.stroke();
+  for(var i = 0; i < gameBoard.length; i++){
+    for(var j = 0; j < gameBoard[i].length; j++){
+        ctx.beginPath();
+        ctx.arc( size+ j*size,size+ i*size, 10, 0, 2 * Math.PI);
+        ctx.fillStyle = gameBoard[i][j];
+        ctx.fill();
+    }
   }
 
 
-
 }
-
 function makeMap(){
 	//Make the gameboard layout and coordinates
-  for (var i = 0; i <= yLength; i++) {
+  for (var i = 0; i < yLength; i++) {
 					gameBoard.push([])
-          for (var j = 0; j <= xLength; j++) {
-            gameBoard[i][j] = "O"
+          for (var j = 0; j < xLength; j++) {
+            gameBoard[i][j] = "white"
           }
   }
 }
-
 function dropCoin(coin){
-	console.log(coin.col)
-	for (var i = 6; i > 0; i--) {
-	  if (gameBoard[i][coin.col] == "O"){
+  for (var i = 5; i >= 0; i--) {
+	  if (gameBoard[i][coin.col] == "white"){
 			gameBoard[i][coin.col] = coin.colour
 			return 0
 		}
 	}
 }
-
-function printTheGrid(){
-	var line = ""
-	 for (var i = 0; i <= yLength; i++) {
-	 	line+= ("<br>") ;
-    for (var j = 0; j <= xLength; j++) {
-			line += " " +gameBoard[i][j] + " ";
-		}
-	}
-	document.getElementById("demo").innerHTML = line;
-}
-
-
 function players(){
   var x = document.getElementById("myText").value;
-  document.getElementById("input").innerHTML = x;
-  if (turn == "X"){
-  	turn = "Y";
-  }else{
-  	turn = "X";
-  }
-  dropCoin( {col:x ,colour: turn});
-  printTheGrid()
-}
 
+  if (x.match(/[1-7]/g)){
+    if (turn == "red"){
+       turn = "yellow";
+    }else{
+       turn = "red";
+    }
+    dropCoin( {col:(x-1) ,colour: turn});
+    drawGrid()
+    winnerAlgorithm(3,3)
+  }
+}
 makeMap()
-printTheGrid()
-draw()
-console.log(gameBoard)
+drawGrid()
