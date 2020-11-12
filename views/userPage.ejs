@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <link rel="shortcut icon" href="../assets/favicon.png" type="image/x-icon">
+
+  <link rel="stylesheet" href="../assets/css/maicons.css">
+
+  <link rel="stylesheet" href="../assets/vendor/animate/animate.css">
+
+  <link rel="stylesheet" href="../assets/vendor/owl-carousel/css/owl.carousel.min.css">
+
+  <link rel="stylesheet" href="../assets/css/bootstrap.css">
+
+  <link rel="stylesheet" href="../assets/css/mobster.css">
+
+  <link rel="stylesheet" href="../login.css">
+
+</head>
+
+<body>
+  <%- include("partials/header", {}); %>
+<p></p>
+    <div class="page-hero-section bg-image hero-mini" style="background-image: url(../assets/img/hero_mini.svg);">
+      <div class="hero-caption pt-5">
+        <div class="container h-100">
+          <div class="row align-items-center h-100">
+            <div class="col-lg-6 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+              <div class="card-page mt-3">
+                <h3 class="mb-3">Hello <%= data.name %></h3>
+
+                <input type="checkbox" value="no"> <label for="no">private</label>
+                  <input type="checkbox" value="yes">  <label for="yes">public</label>
+                  <div class="ml-auto my-2 my-lg-0">
+                    <br>
+
+                    <p>Search </p>
+                    <form id="contact-form" method="POST" action="/search">
+                    <label for="search"> Who do you want to search up</label>
+                    <input type="text" onfocus=this.value='' value="   " name ="user">
+                    <input type="submit" value="submit" class="btn btn-primary rounded-pill"/>
+                  </form>
+
+                  </div>
+
+
+                <p><b>Active Games<b></p>
+                <ul class="theme-list">
+                  <form id="contact-form" method="POST" action='/playgame' >
+
+                   <% for(var i = 0; i < JSON.stringify(data.games_active.length); i++){ %>
+             <button class="btn btn-primary rounded-pill" name="name" value=<%=data.games_active[i].name%>>
+               <%=  data.games_active[i].name  %>
+             </button>
+                   <% } %>
+
+  </form>
+                  <li class="list-item"> Game 2</li>
+                  <li class="list-item"> Game 3</li>
+                </ul>
+                <div class="ml-auto my-2 my-lg-0">
+                  <button class="btn btn-primary rounded-pill">Create Game</button>
+                  <p></p>
+                </div>
+                <p></p>
+                <p><b>History<b></p>
+                <ul class="theme-list">
+
+                   <li class="list-item"> <%= data.games_played %> </li>
+
+                  <li class="list-item"> Game 2 Againt Alex </li>
+                  <li class="list-item"> Game 1 Againt Alex </li>
+                  <li class="list-item"> Game 1 Against Ben</li>
+                </ul>
+
+                <p></p>
+                <p><b>Friend Request<b></p>
+
+                <form id="contact-form" method="POST" action='/requestResponse' >
+                 <ul class="theme-list">
+                   <p><%=data.friend_request.length%> </p>
+
+                   <li> <% for (var i =0; i<data.friend_request.length; i++){%>
+                     <li >   <%= data.friend_request[i] %> </li>
+
+                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friend_request[i] %>Y >yes</button>
+                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friend_request[i] %>N>no</button>
+                       <% } %>
+
+                  <br>
+                </ul>
+               </form>
+
+                <p></p>
+                <p><b>Friends<b></p>
+                <ul class="theme-list">
+                  <form id="contact-form" method="POST" action='/removeFriend' >
+
+                  <li> <% for (var i =0; i<data.friends.length; i++){%>
+                    <li >   <%= data.friends[i] %> </li>
+                    <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friends[i] %>  >Remove</button>
+                      <% } %>
+
+                    </form>
+
+                </ul>
+
+               </div>
+
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+</body>
+
+</html>

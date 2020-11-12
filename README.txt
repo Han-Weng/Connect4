@@ -1,42 +1,38 @@
-1.
-HTML
+Han Weng
 
-game.html
-demo of how the game would look like with js supported to help the users make choses
+Views folder, app.js and businesslogic.js are the stuff you should look at
 
-login.html
-is for how the initial login would look
+1. What project you are working on
 
-userPage.html  is about what the users would see once they are in
+I am working on the Connect4 project
 
-viewUsage.html is about how the user can view other player stuff
+2.The name of both partners, if applicable
+N/A
+just Han Weng
 
-css
+3.Instructions that specify how to setup,run, and test your server
+terminal stuff to add and then run
 
-assets/css
-the assets/css is a folder containing templates for how the general layout would look using
-using bootstrap and other frameworks too like mobster and maicon
+npm install ejs
+npm install body-parser
+npm install express
+node App
 
-bootstrap.css frame work to make it pretty
-mobster.css frame work to make it pretty
-maicon.css frame work to make it pretty
-combine all three to get a good layout
+4.A description of the files the TA should look at to evaluate your business logic code
 
+just look at the businesslogic.js file to evaluate my business logic code, most of the
+functions have been commented
 
-the img folder contains the info for how to set  up the background
+5.A description of anything the TA should look at to evaluate any of the additional expectations
+that you have addressed in the submissions
 
-the favicon files are the image tab logos and the website main logo for display
+in userPage.ejs you will see a search, and that search bar will allow you to search up
+a existing user like Jonathon, existing users like Joseph and Jotaro. Its also key sensitive
+so use captials as well. If a user doesnt exist then it wouldn't work
 
-JS
-this  protoconnect4 is the general layout for how the connect 4 game would work still
-yet to fully work
+in login.ejs you can try registering for a account, if the account doesnt exist then
+the server will render a /userPage with all the data filled out and if it does, you will be
+directed to the existing accountv page
 
-2.
-Working the connect 4 project
-
-3.
-Name: Han Weng
-
-
-4.
-No instructions involved
+in my  app.js, it supports CSS and EJS template engines, serving static data to fill things like
+in /userPage or /viewUser
