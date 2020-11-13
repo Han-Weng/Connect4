@@ -1,55 +1,44 @@
-const express = require('express');
+var express = require('express');
 var bodyParser = require('body-parser');
-const ejs = require("ejs");
-const session = require('express-session')
+var ejs = require("ejs");
+var session = require('express-session')
 var urlencoderParser = bodyParser.urlencoded({ extended: false});
- const app = express();
+ var app = express();
+ var socket = require("socket.io");
  app.use(session({  secret: 'some secret here', maxAge: 24 * 60 * 60 * 1000  }))
 
-  let gameBoard=[ ]
-  let xLength = 7
-  let yLength = 6
+ var fs = require('fs');
+ var rawdata = fs.readFileSync('data.json');
+ var data = JSON.parse(rawdata);
+ var rawgame = fs.readFileSync('game.json');
+ var game = JSON.parse(rawgame);
 
-  for (var i = 0; i < yLength; i++) {
-          gameBoard.push([])
-          for (var j = 0; j < xLength; j++) {
-            gameBoard[i][j] = "white"
-          }
-  }
+ var server = app.listen(8080, function () {
+   console.log("working server")
+  });
+ var io = socket(server)
 
- const fs = require('fs');
-
- let rawdata = fs.readFileSync('data.json');
- let data = JSON.parse(rawdata);
- // console.log(data);
- // console.log("hello");
-
- app.set('view engine', 'ejs');
- app.use(express.static( './js'));
+app.set('view engine', 'ejs');
+app.use(express.static( './js'));
 app.use(express.json())
 app.use('/assets', express.static('assets'));
 app.use(express.urlencoded({extended: true}));
 
+app.post("/search", searchForUser);
 app.post("/viewUser", searchForUser);
-app.get('/login', createUser)
 app.post('/login', createUser)
 app.post("/search", searchForUser);
-
 app.post("/friendRequest", friendRequest);
 app.post("/requestResponse", requestResponse);
 app.post("/input", input);
 app.post("/removeFriend",removeFriend);
 app.post("/playgame",playgame);
+app.post('/chat', chat)
+
+app.get('/login', createUser)
 app.get('/', function(req,res){
   res.render( "index");
 });
-app.use("/login", function(req, res){
-  console.log(req.session.name);
-
-  console.log("Request from user: " + req.session);
-});
-
-
 app.get('/userPage', function(req,res){
   console.log("this is the issue "+(JSON.stringify(req.session)));
   console.log("this is the name "+(JSON.stringify(req.session.name)).toLowerCase());
@@ -63,70 +52,76 @@ app.get("/users/:uid", function(req, res, next){
 
 })
 app.get("/game/:uid", function(req, res, next){
+   console.log("Getting user with name: " + games_active_array( JSON.stringify(req.params.uid)));
+   console.log("Getting user with name: " + (req.params.uid));
+         res.render('game', {
+          data : games_active_array(req.params.uid).connect4,
+          chat : games_active_array(req.params.uid).chat,
+          id : games_active_array(req.params.uid).id,
+          game : games_active_array(req.params.uid),
 
-  req.session.ass= 6
-
-   console.log("Getting user with name: " + req.params.uid);
-   doesExist(req.params.uid)
-
-   for(var i = 0; i <  doesExist(req.params.uid).games_active.length; i++){
-     if(doesExist(req.params.uid).games_active[i].name ==req.session.name ){
-       console.log("doesExist(req.params.uid).games_active[i].name ",  doesExist(req.params.uid).games_active[i].name)
-       console.log("req.session.name ",  req.session.name)
-        res.render('game', {
-          data : doesExist(req.params.uid).games_active[i].connect4,
-          yellowPlayer: req.session.name,
-           redPlayer:doesExist(req.params.uid).name})
-
+          yellowPlayer: games_active_array(req.params.uid).yellow,
+           redPlayer: games_active_array(req.params.uid).red})
        return 0;
-     }
-  }
-
-
 })
+
+function chat(req,res){
+
+   var map = games_active_array(req.body.enemy)
+   map.chat.push(req.session.name)
+   map.chat.push(req.body.chat)
+  res.redirect(req.get('referer'));;
+
+
+}
 function playgame(req, res){
-  console.log(req.body.name)
-   for(var i = 0; i <  doesExist(req.body.name).games_active.length; i++){
-     if(doesExist(req.body.name).games_active[i].name ==req.session.name ){
-        console.log("this is the req.body.name ",  games_active_array(req.body.name, req.session.name))
-       res.redirect("/game/" + req.body.name);
+  console.log(req.body)
+
+   for(var i = 0; i <  game.length; i++){
+
+     if(parseInt(req.body.name) ==game[i].id ){
+        console.log("this is the req.body.name ",  game[i])
+       res.redirect("/game/" +game[i].id);
        return 0;
      }
   }
   console.log("data is ....", req.body)
 }
-
 function input(req, res){
   var numbersOnly = (req.body.input).match(/[0-6]/);
-    var length = ((req.body.input).length);
-      var player =       games_active_array(req.body.array, req.session.name);
-      console.log('player turn is on', player.turn)
+  var length = ((req.body.input).length);
+  var player=0
+  var playerColour=1
+  var map = games_active_array(req.body.array)
 
+  if ((map.connect4[0][req.body.input] != "white")||((numbersOnly == null)||(length >1)||((map.turn[player]!=req.session.name)))){
+    res.redirect(req.get('referer'));;
+    return 0;
+  }
+  for (var i = 5; i >= 0; i--) {
+ 	  if (map.connect4[i][req.body.input] == "white"){
 
-      if ((numbersOnly == null)||(length >1)||((player.turn==0))){
-
-        res.redirect(req.get('referer'));;
-        return 0;
-      }
-      var map = games_active_array(req.body.array, req.session.name).connect4
-      var colour = games_active_array(req.body.array, req.session.name).colour
-       player.turn = 0;
-       console.log('player turn is on', player.turn)
-
-      for (var i = 5; i >= 0; i--) {
-     	  if (map[i][req.body.input] == "white"){
-    			map[i][req.body.input] = colour
-          res.redirect(req.get('referer'));;
-    			return 0
-    		}
-    	}
+			map.connect4[i][req.body.input] =  map.turn[playerColour]
+ console.log("winnerAlgorithm(row,col,gameBoard) is ",winnerAlgorithm(i,req.body.input,map.connect4))
+   winnerAlgorithm(i,req.body.input,map.connect4)
+       console.log("map is ")
+       if (map.turn == map.yellow){
+         map.turn  = map.red
+         }else{
+          map.turn  = map.yellow
+        }
+      res.redirect(req.get('referer'));;
+			return 0
+		}
+	}
   res.redirect(req.get('referer'));;
 
 }
-function games_active_array(name, username){
-  for(var i = 0; i <  doesExist(name).games_active.length; i++){
-    if(doesExist(name).games_active[i].name ==username ){
-      return doesExist(name).games_active[i];
+function games_active_array(name){
+  for(var i = 0; i <  game.length; i++){
+    if(game[i].id ==name ){
+
+      return game[i];
     }
  }
  return 0;
@@ -248,35 +243,99 @@ console.log('session '+req.session)
 	}
  }
 }
-app.listen(8080, function () {
- });
+ 
+ function checkHorizontal(row,col,gameBoard){
+   let colour = ['red','yellow']
+   let index =0;
+   let points = 0;
+   while (index <2){
+   for (var i = col-3; i <= col+3 ; i++) {
+     if ((i >=0 && i < 8)){
+       if ((gameBoard[row][i]==colour[index])&&(gameBoard[row][i+1]==colour[index])&&(gameBoard[row][i+2]==colour[index])&&(gameBoard[row][i+3]==colour[index])){
+          return colour[index]
+       }
+   }
+ }
+   index++;
+ }
+ return "";
+ }
+ function checkVertical(row,col,gameBoard){
+   let colour = ['red','yellow']
+   let index =0;
+   let points = 0;
+   while (index <2){
+   for (var i = row-3; i <= row+3 ; i++) {
+     if ((i >=0 && i +3< 6)){
+       if ((gameBoard[i][col]==colour[index])&&(gameBoard[i+1][col]==colour[index])&&(gameBoard[i+2][col]==colour[index])&&(gameBoard[i+3][col]==colour[index])){
 
+         return colour[index]
+       }
+   }
+   }
+   index++;
 
+ }
+   return "";
+ }
+ function checkLeftDiagonal(row,col,gameBoard){
+   let colour = ['red','yellow']
+   let index =0;
+   let points = 0;
+   let i = row-3;
+   let j=col-3;
+   // console.log("row"+row)
+   // console.log("col"+col)
 
+   while (index <2){
+   i = row-3;
+   j=col-3;
+   while ((i+3 < 8)&&(j+3 < 7)) {
+      // console.log(i)
+      // console.log(j)
 
+     if ((i  >=0 && i+3 < 6)&&(j  >=0 && j+3 < 7)){
+       if ((gameBoard[i][j]==colour[index])&&(gameBoard[i+1][j+1]==colour[index])&&(gameBoard[i+2][j+2]==colour[index])&&(gameBoard[i+3][j+3]==colour[index])){
+         return colour[index]
+       }
+   }
+   i++
+   j++
+ }
+ index++;
+ }
+ return "";
+ }
+ function checkRightDiagonal(row,col,gameBoard){
+   let colour = ['red','yellow']
+   let index =0;
+   let points = 0;
+   let i = row;
+   let j=col;
+   while (index <2){
+       i = row+3;
+       j=col-3;
+   while ((i  >= 0)&&(j+3 < 7)) {
+     if ((i-3  >=0 && i  < 6)&&(j  >=0 && j+3 < 7)){
+       if ((gameBoard[i][j]==colour[index])&&(gameBoard[i-1][j+1]==colour[index])&&(gameBoard[i-2][j+2]==colour[index])&&(gameBoard[i-3][j+3]==colour[index])){
+         return colour[index]
+       }
+ }
+     i--
+     j++
+ }
+   index++;
+ }
+ return "";
+ }
+ function winnerAlgorithm(row,col,gameBoard){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Request that does not match api/ folder,
-// Attempts to grab the html from views/pages/
-// app.get(/^(?!\/api\/)/, (req, res) => {
-//     let purl = url.parse(req.url, true);
-//     let pathname = 'pages' + purl.pathname;
-//
-//     if ((pathname)[pathname.length - 1] === '/') {
-//         pathname += 'index';
-//     }
-//     res.render(pathname, purl.query);
-// });
+ 	var checkDirection = [checkHorizontal(row,col,gameBoard), checkVertical(row,col,gameBoard),
+                       checkLeftDiagonal(row,col,gameBoard), checkRightDiagonal(row,col,gameBoard)]
+   for (var i = 0; i < checkDirection.length ; i++) {
+      if (checkDirection[i]!=""){
+      return checkDirection[i];
+     }
+   }
+   return checkDirection[i];
+ }

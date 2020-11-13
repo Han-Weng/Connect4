@@ -1,0 +1,38 @@
+[
+  {
+  "id": 0,
+   "red": ["jotaro","red"],
+"yellow": ["joseph","yellow"],
+ "turn":["jotaro","red"],
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
+   "connect4": [
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ] ]
+
+
+  },
+  {
+  "id": 1,
+   "red": ["jotaro","red"],
+   "yellow": ["jonathon","yellow"],
+
+ "turn": ["jotaro","red"],
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+"connect4": [
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ]
+  ]
+
+  }
+
+
+ ]

@@ -29,20 +29,30 @@
 <h2>Game Between <%- yellowPlayer %> vs <%- redPlayer %></h2>
 
 
-
-
 <form method="POST" action="/input">
-  <button name="array" value=<%- redPlayer %>>enter</button>
-
+  <button name="array" value=<%= id %>>player move</button>
   <input type="text" name = "input" onfocus=this.value='' id="myText" value="" pattern"[0-6]{1}" required>
-
 </form>
 
 
 <p id='circle'></p>
-  <canvas id="rr"  width="600" height="525" style="background-image:linear-gradient(to bottom left, cyan, blue);"></canvas>
+<div   style=" background:white border:6px  width: 600px; float: left;">
 
-  <p id='winner'>hello</p>
+  <canvas id="rr"  width="600" height="525" style="background-image:linear-gradient(to bottom left, cyan, blue);"></canvas>
+</div>
+<div style=" border:6px solid blue; background:white; float: left;" >
+
+  <form method="POST" action="/chat" style="width:100%">
+    <% for(var i = 0; i < chat.length; i++){ %>
+       <%if (i%2 ==0) { %>
+        <p>  <%=  chat[i]  %>  : <%=  chat[1+i]  %></p>
+      <% } %>
+          <% } %>
+    <input type="text" name = "chat" onfocus=this.value='' value="" >
+    <button   name = "enemy" value=<%- id %>>chat</button>
+
+  </form>
+ </div>
   <script>
   let  gameBoard=<%- JSON.stringify(data) %>;
   let size =  75
@@ -54,7 +64,7 @@
   var y= -1;
   for(var i = 0; i < gameBoard.length; i++){
     for(var j = 0; j < gameBoard[i].length; j++){
- 
+
       ctx.lineWidth = 2;
      ctx.fillStyle = gameBoard[i][j];
      ctx.beginPath();

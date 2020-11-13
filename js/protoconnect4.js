@@ -6,7 +6,7 @@ let size =  75
 let diameter =  20
 var coin = Math.floor(Math.random() * (7 - 0 + 1)) + 1;
 
-function checkHorizontal(row,col){
+function checkHorizontal(row,col,gameboard){
   let colour = ['red','yellow']
   let index =0;
   let points = 0;
@@ -25,7 +25,7 @@ function checkHorizontal(row,col){
 }
 return "";
 }
-function checkVertical(row,col){
+function checkVertical(row,col,gameboard){
   let colour = ['red','yellow']
   let index =0;
   let points = 0;
@@ -43,8 +43,7 @@ function checkVertical(row,col){
 }
   return "";
 }
-
-function checkLeftDiagonal(row,col){
+function checkLeftDiagonal(row,col,gameboard){
   let colour = ['red','yellow']
   let index =0;
   let points = 0;
@@ -72,8 +71,7 @@ index++;
 }
 return "";
 }
-
-function checkRightDiagonal(row,col){
+function checkRightDiagonal(row,col,gameboard){
   let colour = ['red','yellow']
   let index =0;
   let points = 0;
@@ -95,15 +93,13 @@ function checkRightDiagonal(row,col){
 }
 return "";
 }
-
-function winnerAlgorithm(row,col){
-	var checkDirection = [checkHorizontal(row,col), checkVertical(row,col),
-                      checkLeftDiagonal(row,col), checkRightDiagonal(row,col)]
+function winnerAlgorithm(row,col,gameboard){
+	var checkDirection = [checkHorizontal(row,col,gameboard), checkVertical(row,col,gameboard),
+                      checkLeftDiagonal(row,col,gameboard), checkRightDiagonal(row,col,gameboard)]
   for (var i = 0; i < checkDirection.length ; i++) {
   //console.log(checkDirection[i])
     if (checkDirection[i]!=""){
-    //  console.log(checkDirection[i])
-     document.getElementById("winner").innerHTML = checkDirection[i]+ " is Winner!!!!";
+     console.log("winner winner chicken dinner ", checkDirection[i])
     }
   }
 }

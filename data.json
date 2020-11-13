@@ -1,14 +1,18 @@
 [
   {
-  "name": "Jonathon",
+  "name": "jonathon",
   "pw":"123",
   "games_played": ["Dio"],
+  "gameID": [0,1],
+
   "games_active":[
     {
    "name": "jotaro",
 
 "colour": "yellow",
 "turn": 0,
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
    "connect4": [
       [ "white", "white", "white", "white", "white", "white", "white" ],
   [ "white", "white", "white", "white", "white", "white", "white" ],
@@ -28,11 +32,15 @@
   "pw":"123",
   "games_played": ["Kars" ],
   "games_active":[  {
+
    "name": "jotaro",
 "colour": "yellow",
 "turn": 0,
-   "connect4": [
-      [ "white", "white", "white", "white", "white", "white", "white" ],
+"gameID": [0,1],
+
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+"connect4": [
+  [ "white", "white", "white", "white", "white", "white", "white" ],
   [ "white", "white", "white", "white", "white", "white", "white" ],
   [ "white", "white", "white", "white", "white", "white", "white" ],
   [ "white", "white", "white", "white", "white", "white", "white" ],
@@ -40,20 +48,25 @@
   [ "white", "white", "white", "white", "white", "white", "white" ]
 ]
   }
+
   ],
   "wins":5,
   "total":6,
   "friends":["Casear"],
-  "friend_request":["Jotaro"]
+  "friend_request":["jotaro"]
   },
   {
-  "name": "Joseph",
+  "name": "joseph",
   "pw":"123",
+  "gameID": [0,1],
+
   "games_played": ["Kars"],
   "games_active":[  {
    "name": "jotaro",
 "colour": "yellow",
 "turn": 0,
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
    "connect4": [
       [ "white", "white", "white", "white", "white", "white", "white" ],
       [ "white", "white", "white", "white", "white", "white", "white" ],
@@ -67,11 +80,12 @@
   "wins":5,
   "total":6,
   "friends":["Casear"],
-  "friend_request":["Jotaro"]
+  "friend_request":["jotaro"]
   },
   {
-  "name": "Jotaro",
+  "name": "jotaro",
   "pw":"123",
+  "gameID": [0,1],
 
   "games_played": ["Kars"],
   "games_active":[  {
@@ -79,6 +93,8 @@
       "colour": "red",
 
       "turn": 1,
+      "chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
    "connect4": [
       [ "white", "white", "white", "white", "white", "white", "white" ],
       [ "white", "white", "white", "white", "white", "white", "white" ],
