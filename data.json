@@ -2,8 +2,8 @@
   {
   "name": "jonathon",
   "pw":"123",
-  "games_played": ["Dio"],
-  "gameID": [0,1],
+  "games_played": [1],
+  "gameID": [1],
 
   "games_active":[
     {
@@ -58,9 +58,9 @@
   {
   "name": "joseph",
   "pw":"123",
-  "gameID": [0,1],
+  "gameID": [0],
 
-  "games_played": ["Kars"],
+  "games_played": [1],
   "games_active":[  {
    "name": "jotaro",
 "colour": "yellow",

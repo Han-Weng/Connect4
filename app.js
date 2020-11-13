@@ -12,13 +12,12 @@ var urlencoderParser = bodyParser.urlencoded({ extended: false});
  var data = JSON.parse(rawdata);
  var rawgame = fs.readFileSync('game.json');
  var game = JSON.parse(rawgame);
-
  var server = app.listen(8080, function () {
    console.log("working server")
   });
- var io = socket(server)
 
 app.set('view engine', 'ejs');
+
 app.use(express.static( './js'));
 app.use(express.json())
 app.use('/assets', express.static('assets'));
@@ -34,6 +33,9 @@ app.post("/input", input);
 app.post("/removeFriend",removeFriend);
 app.post("/playgame",playgame);
 app.post('/chat', chat)
+app.post('/next', next)
+app.post("/watchgame",watchgame);
+app.post("/creategame",creategame);
 
 app.get('/login', createUser)
 app.get('/', function(req,res){
@@ -44,7 +46,6 @@ app.get('/userPage', function(req,res){
   console.log("this is the name "+(JSON.stringify(req.session.name)).toLowerCase());
   res.render("userPage", {data:doesExist(req.session.name)});
 });
-
 app.get("/users/:uid", function(req, res, next){
    console.log("Getting user with name: " + req.params.uid);
    doesExist(req.params.uid)
@@ -58,27 +59,76 @@ app.get("/game/:uid", function(req, res, next){
           data : games_active_array(req.params.uid).connect4,
           chat : games_active_array(req.params.uid).chat,
           id : games_active_array(req.params.uid).id,
+          winner : games_active_array(req.params.uid).winner,
           game : games_active_array(req.params.uid),
-
+          turn : games_active_array(req.params.uid).turn,
           yellowPlayer: games_active_array(req.params.uid).yellow,
            redPlayer: games_active_array(req.params.uid).red})
        return 0;
 })
+app.get("/watch/:uid", function(req, res, next){
 
+     console.log("Getting user with name: " + (req.params.uid));
+     res.render('history', {
+       record : games_active_array(req.params.uid).record,
+      data : games_active_array(req.params.uid).history,
+      chat : games_active_array(req.params.uid).chat,
+      id : games_active_array(req.params.uid).id,
+      winner : games_active_array(req.params.uid).winner,
+      game : games_active_array(req.params.uid),
+      turn : games_active_array(req.params.uid).turn,
+      yellowPlayer: games_active_array(req.params.uid).yellow,
+      redPlayer: games_active_array(req.params.uid).red})
+   return 0;
+  })
+
+
+function creategame(req,res){
+  var name =doesExist(req.session.name).games_active;
+
+  var n = fruits.includes("Mango");
+  for(var i = 0; i <  game.length; i++){
+    if(game[i].id ==name ){
+      return game[i];
+    }
+ }
+ return 0;
+
+}
+function next(req,res){
+  var next =(req.body.next).substring(0, 4);
+  var id =(req.body.next).substring(4);
+  console.log("this data is ",games_active_array(id).record)
+
+  if (next == "next"){
+    games_active_array(id).record++
+
+  }else if (next == "prev"){
+    console.log(req.body.next)
+    games_active_array(id).record--
+  }
+  res.redirect(req.get('referer'));;
+}
+
+function watchgame(req, res){
+  console.log(req.body)
+   for(var i = 0; i <  game.length; i++){
+     if(parseInt(req.body.name) ==game[i].id ){
+       res.redirect("/watch/" +game[i].id);
+       return 0;
+     }
+  }
+  console.log("data is ....", req.body)
+}
 function chat(req,res){
-
    var map = games_active_array(req.body.enemy)
    map.chat.push(req.session.name)
    map.chat.push(req.body.chat)
   res.redirect(req.get('referer'));;
-
-
 }
 function playgame(req, res){
   console.log(req.body)
-
    for(var i = 0; i <  game.length; i++){
-
      if(parseInt(req.body.name) ==game[i].id ){
         console.log("this is the req.body.name ",  game[i])
        res.redirect("/game/" +game[i].id);
@@ -100,12 +150,17 @@ function input(req, res){
   }
   for (var i = 5; i >= 0; i--) {
  	  if (map.connect4[i][req.body.input] == "white"){
-
 			map.connect4[i][req.body.input] =  map.turn[playerColour]
- console.log("winnerAlgorithm(row,col,gameBoard) is ",winnerAlgorithm(i,req.body.input,map.connect4))
-   winnerAlgorithm(i,req.body.input,map.connect4)
-       console.log("map is ")
-       if (map.turn == map.yellow){
+
+      console.log("so whats going on this time ", winnerAlgorithm(i,req.body.input,map.connect4))
+
+       map.winner  = winnerAlgorithm(i,req.body.input,map.connect4)
+
+      if (draw(map)=="draw"){
+         map.winner  = draw(map)
+        res.redirect(req.get('referer'));;
+      }
+        if (map.turn == map.yellow){
          map.turn  = map.red
          }else{
           map.turn  = map.yellow
@@ -117,10 +172,17 @@ function input(req, res){
   res.redirect(req.get('referer'));;
 
 }
+function draw(map){
+  for (var i = 6; i >= 0; i--) {
+    if (map.connect4[0][i] != "white"){
+      return "not draw";
+    }
+  }
+  return "  draw";
+}
 function games_active_array(name){
   for(var i = 0; i <  game.length; i++){
     if(game[i].id ==name ){
-
       return game[i];
     }
  }
@@ -152,6 +214,7 @@ function requestResponse(req, res){
       if (response == 'Y'){
         console.log(  doesExist(req.session.name).friends)
           doesExist(req.session.name).friends.push(name);
+          doesExist(name).friends.push(req.session.name);
           console.log(  doesExist(req.session.name).friends)
 
       }
@@ -170,6 +233,7 @@ let body = req.body;
 let sender =  (body.name)
 let receiver =  (req.session.name)
 
+
 for(var i = 0; i < doesExist(receiver).friend_request.length; i++) {
 //	console.log( data[i].name)
   if ((sender) == doesExist(receiver).friend_request[i]){
@@ -177,7 +241,10 @@ for(var i = 0; i < doesExist(receiver).friend_request.length; i++) {
     return false;
   }
 }
-doesExist(receiver).friend_request.push(sender);
+ console.log("sended",sender);
+doesExist(sender).friend_request.push(receiver);
+console.log("doesExist(receiver).friend_request.push(sender); ",doesExist(sender).friend_request)
+
 res.redirect(req.get('referer'));;
 }
 function searchForUser(req, res){
@@ -218,7 +285,7 @@ req.session.pw=  newUser.pw
 
 console.log('username'+req.session.name)
 console.log('password'+req.session.pw)
-console.log('session '+req.session)
+console.log('session '+req.body)
 
   if(  doesExist(newUser.name)){
 		console.log('user does exist')
@@ -229,12 +296,12 @@ console.log('session '+req.session)
     res.redirect("userPage");
  		return null;
 	}else{
-//	console.log('user is working')
-
-  newUser.games_played = '';
-  newUser.games_active = '';
-  newUser.friends = '';
-  newUser.friend_request = '';
+	console.log('user is working')
+  newUser.gameID =[]
+  newUser.games_played = [];
+  newUser.games_active = [];
+  newUser.friends = [];
+  newUser.friend_request = [];
 	newUser.win = 0;
 	newUser.total = 0;
 	data.push(newUser)
@@ -243,8 +310,7 @@ console.log('session '+req.session)
 	}
  }
 }
- 
- function checkHorizontal(row,col,gameBoard){
+function checkHorizontal(row,col,gameBoard){
    let colour = ['red','yellow']
    let index =0;
    let points = 0;
@@ -252,7 +318,7 @@ console.log('session '+req.session)
    for (var i = col-3; i <= col+3 ; i++) {
      if ((i >=0 && i < 8)){
        if ((gameBoard[row][i]==colour[index])&&(gameBoard[row][i+1]==colour[index])&&(gameBoard[row][i+2]==colour[index])&&(gameBoard[row][i+3]==colour[index])){
-          return colour[index]
+           return colour[index]
        }
    }
  }
@@ -260,7 +326,7 @@ console.log('session '+req.session)
  }
  return "";
  }
- function checkVertical(row,col,gameBoard){
+function checkVertical(row,col,gameBoard){
    let colour = ['red','yellow']
    let index =0;
    let points = 0;
@@ -278,7 +344,7 @@ console.log('session '+req.session)
  }
    return "";
  }
- function checkLeftDiagonal(row,col,gameBoard){
+function checkLeftDiagonal(row,col,gameBoard){
    let colour = ['red','yellow']
    let index =0;
    let points = 0;
@@ -306,7 +372,7 @@ console.log('session '+req.session)
  }
  return "";
  }
- function checkRightDiagonal(row,col,gameBoard){
+function checkRightDiagonal(row,col,gameBoard){
    let colour = ['red','yellow']
    let index =0;
    let points = 0;
@@ -328,13 +394,13 @@ console.log('session '+req.session)
  }
  return "";
  }
- function winnerAlgorithm(row,col,gameBoard){
+function winnerAlgorithm(row,col,gameBoard){
 
  	var checkDirection = [checkHorizontal(row,col,gameBoard), checkVertical(row,col,gameBoard),
                        checkLeftDiagonal(row,col,gameBoard), checkRightDiagonal(row,col,gameBoard)]
    for (var i = 0; i < checkDirection.length ; i++) {
       if (checkDirection[i]!=""){
-      return checkDirection[i];
+       return checkDirection[i];
      }
    }
    return checkDirection[i];

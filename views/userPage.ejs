@@ -63,22 +63,29 @@
                    <% } %>
 
   </form>
-                  <li class="list-item"> Game 2</li>
-                  <li class="list-item"> Game 3</li>
+
                 </ul>
                 <div class="ml-auto my-2 my-lg-0">
+                  <form id="contact-form" method="POST" action='/creategame' >
+
                   <button class="btn btn-primary rounded-pill">Create Game</button>
+                </form>
+
                   <p></p>
                 </div>
                 <p></p>
                 <p><b>History<b></p>
                 <ul class="theme-list">
+                  <form id="contact-form" method="POST" action='/watchgame' >
 
                    <li class="list-item"> <%= data.games_played %> </li>
+                   <% for(var i = 0; i < JSON.stringify(data.games_played.length); i++){ %>
+                   <button class="btn btn-primary rounded-pill" name="name" value=<%=data.gameID[i]%>>
+                     <%=  data.games_played[i]  %>
+                   </button>
+                   <% } %>
 
-                  <li class="list-item"> Game 2 Againt Alex </li>
-                  <li class="list-item"> Game 1 Againt Alex </li>
-                  <li class="list-item"> Game 1 Against Ben</li>
+                  </form>
                 </ul>
 
                 <p></p>

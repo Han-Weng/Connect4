@@ -29,14 +29,16 @@
 <h2>Game Between <%- yellowPlayer %> vs <%- redPlayer %></h2>
 
 
-<form method="POST" action="/input">
-  <button name="array" value=<%= id %>>player move</button>
-  <input type="text" name = "input" onfocus=this.value='' id="myText" value="" pattern"[0-6]{1}" required>
+<form method="POST" action="/next">
+  <button name="next" value="prev<%=id%>">prev</button>
+
+  <button name="next" value="next<%=id%>" >next</button>
+
 </form>
 
 
 <p  >It is <%= turn  %> turn</p>
-<p  >The winner is currenty <%= winner %>  </p>
+<p  >The winner is currenty <%= winner%>  </p>
 
 <div   style=" background:white border:6px  width: 600px; float: left;">
 
@@ -50,13 +52,14 @@
         <p>  <%=  chat[i]  %>  : <%=  chat[1+i]  %></p>
       <% } %>
           <% } %>
-    <input type="text" name = "chat" onfocus=this.value='' value="" >
-    <button   name = "enemy" value=<%- id %>>chat</button>
+
 
   </form>
  </div>
+
   <script>
   let  gameBoard=<%- JSON.stringify(data) %>;
+  let  record=<%- JSON.stringify(record) %>;
   let size =  75
   let diameter =  20
   console.log("the lenght is",  gameBoard )
@@ -66,9 +69,19 @@
   var y= -1;
   for(var i = 0; i < gameBoard.length; i++){
     for(var j = 0; j < gameBoard[i].length; j++){
+      ctx.fillStyle = "white";
 
-      ctx.lineWidth = 2;
-     ctx.fillStyle = gameBoard[i][j];
+  if (gameBoard[i][j] <=record){
+    if (gameBoard[i][j] != 0 &&(gameBoard[i][j]%2 ==0)){
+      ctx.fillStyle = "red";
+    }else if((gameBoard[i][j] != 0 &&(gameBoard[i][j]%2 !=0))){
+      ctx.fillStyle = "yellow";
+    }
+  }else{
+      ctx.fillStyle = "white";
+    }
+
+     ctx.lineWidth = 2;
      ctx.beginPath();
      ctx.arc( size+ j*size,size+ i*size, diameter, 0, 2 * Math.PI);
      ctx.closePath();
