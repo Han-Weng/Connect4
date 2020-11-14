@@ -36,6 +36,9 @@
             <div class="col-lg-6 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
               <div class="card-page mt-3">
                 <h3 class="mb-3">Hello <%= data.name %></h3>
+                <form id="contact-form" method="POST" action="/logout">
+                  <button name="record" value=0 class="btn btn-primary rounded-pill">Logout  </button>
+                </form>
 
                 <input type="checkbox" value="no"> <label for="no">private</label>
                   <input type="checkbox" value="yes">  <label for="yes">public</label>
@@ -68,7 +71,7 @@
                 <div class="ml-auto my-2 my-lg-0">
                   <form id="contact-form" method="POST" action='/creategame' >
 
-                  <button class="btn btn-primary rounded-pill">Create Game</button>
+                  <button name="record" value=0 class="btn btn-primary rounded-pill">Create Game</button>
                 </form>
 
                   <p></p>
@@ -112,7 +115,7 @@
                   <form id="contact-form" method="POST" action='/removeFriend' >
 
                   <li> <% for (var i =0; i<data.friends.length; i++){%>
-                    <li >   <%= data.friends[i] %> </li>
+                    <li > <%= data.friends[i] %> :<%= status[i] %>  </li>
                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friends[i] %>  >Remove</button>
                       <% } %>
 

@@ -22,29 +22,49 @@ app.use(express.static( './js'));
 app.use(express.json())
 app.use('/assets', express.static('assets'));
 app.use(express.urlencoded({extended: true}));
-
-app.post("/search", searchForUser);
-app.post("/viewUser", searchForUser);
+// each of the post request have a function tied to their response, they handle
+//post requests from each page
 app.post('/login', createUser)
-app.post("/search", searchForUser);
-app.post("/friendRequest", friendRequest);
-app.post("/requestResponse", requestResponse);
-app.post("/input", input);
-app.post("/removeFriend",removeFriend);
-app.post("/playgame",playgame);
-app.post('/chat', chat)
-app.post('/next', next)
-app.post("/watchgame",watchgame);
-app.post("/creategame",creategame);
 
-app.get('/login', createUser)
+//userPage post, this will be where the user page post is
+app.post("/logout",logout);
+app.post("/search", searchForUser);
+app.post("/requestResponse", requestResponse);
+app.post("/removeFriend",removeFriend);
+ //these 2 are used in viewuser and userpage, playgame allows you to view or play game
+ //watch game dirtects you to one of their pass games or current games to view pass results
+app.post("/playgame",playgame);
+app.post("/watchgame",watchgame);
+//viewUser viewing other userse
+app.post("/friendRequest", friendRequest);
+//game ejs the game logics
+app.post("/input", input);
+app.post('/chat', chat)
+//history
+app.post('/next', next)
+
+//here are the links for where to go for each route
+app.get('/login',  function(req,res){
+if(req.method ==='GET'){
+    res.render('login')
+}});
 app.get('/', function(req,res){
   res.render( "index");
 });
 app.get('/userPage', function(req,res){
   console.log("this is the issue "+(JSON.stringify(req.session)));
   console.log("this is the name "+(JSON.stringify(req.session.name)).toLowerCase());
-  res.render("userPage", {data:doesExist(req.session.name)});
+  friends = doesExist(req.session.name).friends
+  var status = []
+  for (var i = 0; i < friends.length; i++) {
+    if (doesExist(friends[i]).status == "online"){
+      status.push("online");
+    }else{
+      status.push("offline");
+    }
+
+  }
+  res.render("userPage", {data:doesExist(req.session.name), status: status});
 });
 app.get("/users/:uid", function(req, res, next){
    console.log("Getting user with name: " + req.params.uid);
@@ -82,26 +102,64 @@ app.get("/watch/:uid", function(req, res, next){
    return 0;
   })
 
+//logouts and reset the session or cookie
+function logout(req,res){
+  req.session.name = "";
+  req.session.pw=  "";
+  res.redirect("/login")
 
+}
+//assign the user with a random other and create a new game with new id
 function creategame(req,res){
-  var name =doesExist(req.session.name).games_active;
+  id = Math.floor(Math.random() * ( 101 ))
+  var newGame =  req.body
+  //to make sure the user isn't playing against themselves
+  var opponment = data[Math.floor(Math.random() * data.length)];
+  while (opponment.name == req.session.name){
+    opponment = data[Math.floor(Math.random() * data.length)];
+  }
 
-  var n = fruits.includes("Mango");
-  for(var i = 0; i <  game.length; i++){
-    if(game[i].id ==name ){
-      return game[i];
-    }
- }
+  newGame.id = id
+  newGame.red = [req.session.name, "red"]
+  newGame.yellow = [opponment.name,"yellow"]
+  newGame.turn =  [req.session.name, "red"]
+  newGame.chat = []
+  newGame.connect4 =   [
+   [ "white", "white", "white", "white", "white", "white", "white" ],
+   [ "white", "white", "white", "white", "white", "white", "white" ],
+   [ "white", "white", "white", "white", "white", "white", "white" ],
+   [ "white", "white", "white", "white", "white", "white", "white" ],
+   [ "white", "white", "white", "white", "white", "white", "white" ],
+   [ "white", "white", "white", "white", "white", "white", "white" ] ]
+  newGame.record = 0
+  newGame.history = [
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ] ]
+  game.push(newGame)
+  console.log(newGame)
+  res.redirect("/game/" +newGame.id);
+
  return 0;
 
 }
+//given the history of a game you click next or prev to see what was
+//made at what position, if the user passes next too much
 function next(req,res){
   var next =(req.body.next).substring(0, 4);
   var id =(req.body.next).substring(4);
   console.log("this data is ",games_active_array(id).record)
 
+
   if (next == "next"){
     games_active_array(id).record++
+  }else{  if (games_active_array(id).record-1 ==-1){
+      res.redirect(req.get('referer'));
+      return 0;
+    }
 
   }else if (next == "prev"){
     console.log(req.body.next)
@@ -109,7 +167,6 @@ function next(req,res){
   }
   res.redirect(req.get('referer'));;
 }
-
 function watchgame(req, res){
   console.log(req.body)
    for(var i = 0; i <  game.length; i++){
@@ -271,10 +328,7 @@ function doesExist(newUser){
 	return false;
 }
 function createUser(req,res){
-	if(req.method ==='GET'){
-			res.render('login')
-	}
-	else if (req.method === 'POST'){
+
 	let newUser  =  req.body;
   if(!newUser.name || !newUser.pw){
     return null;
@@ -282,6 +336,8 @@ function createUser(req,res){
 //	console.log(newUser)
 req.session.name=  newUser.name
 req.session.pw=  newUser.pw
+doesExist(req.session.name).status = "online"
+
 
 console.log('username'+req.session.name)
 console.log('password'+req.session.pw)
@@ -298,6 +354,7 @@ console.log('session '+req.body)
 	}else{
 	console.log('user is working')
   newUser.gameID =[]
+  newUser.status = "online"
   newUser.games_played = [];
   newUser.games_active = [];
   newUser.friends = [];
@@ -308,7 +365,7 @@ console.log('session '+req.body)
 
  	res.render("userPage", {data: newUser});
 	}
- }
+
 }
 function checkHorizontal(row,col,gameBoard){
    let colour = ['red','yellow']

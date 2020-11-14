@@ -2,6 +2,8 @@
   {
   "name": "jonathon",
   "pw":"123",
+  "status": "offline",
+
   "games_played": [1],
   "gameID": [1],
 
@@ -30,7 +32,10 @@
   {
   "name": "jo",
   "pw":"123",
-  "games_played": ["Kars" ],
+  "status": "offline",
+  "gameID": [1],
+
+  "games_played": [],
   "games_active":[  {
 
    "name": "jotaro",
@@ -58,6 +63,8 @@
   {
   "name": "joseph",
   "pw":"123",
+  "status": "offline",
+
   "gameID": [0],
 
   "games_played": [1],
@@ -85,6 +92,8 @@
   {
   "name": "jotaro",
   "pw":"123",
+  "status": "offline",
+
   "gameID": [0,1],
 
   "games_played": ["Kars"],
@@ -108,7 +117,7 @@
   "wins":8,
   "total":8,
   "friends":["Polnareff"],
-  "friend_request":["noone"]
+  "friend_request":["jo"]
 }
 
  ]

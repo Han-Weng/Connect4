@@ -49,19 +49,31 @@
 
                     <p><b>Match history<b></p>
                          <ul>
-                      <% for(var i = 0; i < data.games_played.length; i++){ %>
-                      <li><a href="url"><%= data.games_played[i] %></a></li>
-                      <% } %>
+                           <form id="contact-form" method="POST" action='/watchgame' >
+
+                           <% for(var i = 0; i < JSON.stringify(data.games_played.length); i++){ %>
+                           <button class="btn btn-primary rounded-pill" name="name" value=<%=data.gameID[i]%>>
+                             <%=  data.games_played[i]  %>
+                           </button>
+                           <% } %>
+                         </form>
+
   </ul>
                     <p><b>Active Games Click to View</p>
 
+                      <form id="contact-form" method="POST" action='/playgame' >
 
                        <ul>
-                        <% for(var i = 0; i < JSON.stringify(data.games_active.length); i++){ %>
-                        <li><a href="url"><%=  data.games_active[i].name  %></a></li>
+                        <% for(var i = 0; i < JSON.stringify(data.gameID.length); i++){ %>
+                          <button class="btn btn-primary rounded-pill" name="name" value=<%=data.gameID[i]%>>
+                            <%=  data.gameID[i]  %>
+
+
                         <% } %>
 
                       </ul>
+                    </form>
+
                   </div>
                </div>
              </div>
