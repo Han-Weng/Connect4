@@ -156,10 +156,11 @@ function next(req,res){
 
   if (next == "next"){
     games_active_array(id).record++
-  }else{  if (games_active_array(id).record-1 ==-1){
+
+  }else if (games_active_array(id).record-1 ==-1){
+
       res.redirect(req.get('referer'));
       return 0;
-    }
 
   }else if (next == "prev"){
     console.log(req.body.next)
@@ -167,6 +168,8 @@ function next(req,res){
   }
   res.redirect(req.get('referer'));;
 }
+//here if someone wants to watch a game they will be direct to a game with that
+//specifc req id
 function watchgame(req, res){
   console.log(req.body)
    for(var i = 0; i <  game.length; i++){
@@ -177,6 +180,7 @@ function watchgame(req, res){
   }
   console.log("data is ....", req.body)
 }
+//here the chat system, where the logged in user name and their comments get send
 function chat(req,res){
    var map = games_active_array(req.body.enemy)
    map.chat.push(req.session.name)
