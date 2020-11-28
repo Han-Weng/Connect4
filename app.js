@@ -1,20 +1,48 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var ejs = require("ejs");
-var session = require('express-session')
 var urlencoderParser = bodyParser.urlencoded({ extended: false});
  var app = express();
+ var http = require('http').createServer(app);
  var socket = require("socket.io");
- app.use(session({  secret: 'some secret here', maxAge: 24 * 60 * 60 * 1000  }))
+ var io = require('socket.io')(http);
 
  var fs = require('fs');
  var rawdata = fs.readFileSync('data.json');
  var data = JSON.parse(rawdata);
  var rawgame = fs.readFileSync('game.json');
  var game = JSON.parse(rawgame);
- var server = app.listen(8080, function () {
-   console.log("working server")
+
+ var session = require("express-session")({
+  secret: "my-secret",
+  maxAge: 24 * 60 * 60 * 1000 
+});
+
+ 
+app.use(session )
+
+io.use(function(socket, next) {
+  session(socket.request, socket.request.res || {}, next);
+});
+
+io.on('connection', (socket) => {
+  socket.on('game_send', (msg) => {
+    var map = games_active_array(msg.id)
+    map.connect4.push("red")
+    console.log('map: ' + map.connect4);
+    io.sockets.emit('game_get', data={chat:msg.connect4, name:socket.request.session.name } );
+    });
+  socket.on('chat message', (msg) => {
+  var map = games_active_array(msg.id)
+  map.chat.push(socket.request.session.name)
+  map.chat.push(msg.message)
+  console.log('map: ' + map.chat);
+  io.sockets.emit('users_count', data={chat:msg.message, name:socket.request.session.name } );
   });
+});
+http.listen(8080, () => {
+  console.log('listening on *:8080');
+});
 
 app.set('view engine', 'ejs');
 
@@ -28,6 +56,7 @@ app.post('/login', createUser)
 
 //userPage post, this will be where the user page post is
 app.post("/logout",logout);
+app.post("/logout",creategame);
 app.post("/search", searchForUser);
 app.post("/requestResponse", requestResponse);
 app.post("/removeFriend",removeFriend);
@@ -39,7 +68,7 @@ app.post("/watchgame",watchgame);
 app.post("/friendRequest", friendRequest);
 //game ejs the game logics
 app.post("/input", input);
-app.post('/chat', chat)
+//app.post('/chat', chat)
 //history
 app.post('/next', next)
 
