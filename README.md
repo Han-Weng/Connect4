@@ -9,8 +9,6 @@ Your server API does not always adhere to REST principles (inappropriate route m
 
 User Accounts::========================================================================================================================
 
-- Login / Register: Partial. No check for password match when logging in
-
 - Send a friend request to other users of the application: Partial. Can send request to yourself, can send multiple requests to the same person [
 
 - Navigate to any of the friends' profiles: Missing. No links to profiles
