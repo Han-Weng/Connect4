@@ -84,7 +84,7 @@
                    <li class="list-item"> <%= data.games_played %> </li>
                    <% for(var i = 0; i < JSON.stringify(data.games_played.length); i++){ %>
                    <button class="btn btn-primary rounded-pill" name="name" value=<%=data.gameID[i]%>>
-                     <%=  data.games_played[i]  %>
+                    <%=data.gameID[i]%>
                    </button>
                    <% } %>
 
@@ -110,12 +110,20 @@
                </form>
 
                 <p></p>
-                <p><b>Friends<b></p>
+                <p><b>Friends<b></p>[]
                 <ul class="theme-list">
-                  <form id="contact-form" method="POST" action='/removeFriend' >
 
                   <li> <% for (var i =0; i<data.friends.length; i++){%>
                     <li > <%= data.friends[i] %> :<%= status[i] %>  </li>
+  
+                   <form  method="POST" action='/friendRequest'>
+                  <button class="btn btn-primary rounded-pill" name="user" value=<%= data.friends[i] %>  >View</button>
+
+                   <!-- <li class="btn btn-primary rounded-pill" name="user" value=<%= data.friends[i] %>  >View</li> -->
+                  
+                  </form>
+                  <form id="contact-form" method="POST" action='/removeFriend' >
+
                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friends[i] %>  >Remove</button>
                       <% } %>
 

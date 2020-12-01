@@ -35,16 +35,40 @@
         <div class="container h-100">
           <div class="row align-items-center h-100">
             <div class="col-lg-6 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
-                  <form action="/login" method="POST" >
-                <label style="color:white" for="name">name</label>
-                <input type="text" onfocus=this.value='' value="   " name = "name">
-                <br>
-              <label style="color:white" for="pw">pw</label>
-              <input type="text" onfocus=this.value='' value="   " name = "pw">
-              <br>
-              <input type="submit" value="submit" class="btn btn-primary rounded-pill"/>
+              <div style="      float: left; " >
 
-            </form>
+                <form action="/login" method="POST" >
+                  <p style="color:white">Login</p>
+
+                  <label style="color:white" for="name">Username</label>
+                  <br>
+
+                  <input type="text" onfocus=this.value='' value="   " name = "name">
+                  <br>
+                <label style="color:white" for="pw">Password</label>
+                <br>
+
+                <input type="text" onfocus=this.value='' value="   " name = "pw">
+                <br>
+                <input type="submit" value="submit" class="btn btn-primary rounded-pill"/>
+
+                </form>
+              </div>
+
+              <div style="  margin-left: 422px; " >
+
+                <form action="/register" method="POST" >
+                  <p style="color:white">Register</p>
+
+                  <label style="color:white" >Username</label>
+                  <input type="text" onfocus=this.value='' value="   " name = "name">
+                  <br>
+                <label style="color:white" >Password</label>
+                <input type="text" onfocus=this.value='' value="   " name = "pw">
+                <br>
+                <input type="submit" value="submit" class="btn btn-primary rounded-pill"/>
+                </form>
+              </div>
 
              </div>
           </div>

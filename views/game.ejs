@@ -29,15 +29,15 @@
 <h2>Game Between <%- yellowPlayer %> vs <%- redPlayer %></h2>
 
 
-<form method="POST" action="/input">
+<form id = "inputForm" >
   <button name="array" value=<%= id %>>player move</button>
   
-  <input type="text" id="input" name = "input" onfocus=this.value='' id="myText" value="" pattern"[0-6]{1}" required>
+  <input type="text" id="input" name = "input" onfocus=this.value='' id="myText" value="">
 </form>
 
 
 <p  >It is <%= turn  %> turn method="POST" action="/chat"</p>
-<p  >The winner is currenty <%= winner %>  </p>
+<p id="winner" >The winner is currenty <%= winner %>  </p>
 
 <div   style=" background:white border:6px  width: 600px; float: left;">
 
@@ -45,7 +45,7 @@
 </div>
 <div style=" border:6px solid rgb(60, 60, 94); background:white; float: left;" >
 
-  <form  style="width:100%">
+  <form id = "chatForm" style="width:100%">
     <% for(var i = 0; i < chat.length; i++){ %>
        <%if (i%2 ==0) { %>
         <p>  <%=  chat[i]  %>  : <%=  chat[1+i]  %></p>
@@ -60,42 +60,41 @@
  <script src="/socket.io/socket.io.js"></script>
  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-  $(function () {
+        alert("Submitted");
+
+  $(function() {
     var socket = io();
-    $('form').submit(function(e) {
-     // e.preventDefault(); // prevents page reloading
+
+  $('form#chatForm').submit(function(e) {
+
+     e.preventDefault(); // prevents page reloading
       var data = { }
+
       data.message = $('#m').val()
       data.id =  <%- JSON.stringify(id) %>;
       socket.emit('chat message', data);
       $('#m').val('');
-  
+      //return false;
+    });
+  $('form#inputForm').submit(function(e) {
+
+     e.preventDefault(); // prevents page reloading
+      var data = { }
+      data.input = $('#input').val()
+      data.id =  <%- JSON.stringify(id) %>;
+
+      socket.emit('game_send', data);
+      $('#input').val('');
+      console.log("messaged recievd");
+
       return false;
     });
- 
     socket.on('users_count', function(data){
         $('#client_count').append($('<p>').text(data.name+" : "+data.chat));
  
-});
-  });
-</script>
-<script>
-  $(function () {
-    var socket = io();
-    $('form').submit(function(e) {
-     // e.preventDefault(); // prevents page reloading
-      var data = { }
-      data.message = $('#input').val()
-      data.id =  <%- JSON.stringify(id) %>;
-      console.log("messaged recievd");
-      socket.emit('game_send', data);
-      $('#input').val('');
-  
-      return false;
     });
- 
     socket.on('game_get', function(data){
-        $('#client_count').append($('<p>').text(data.name+" : "+data.chat));
+       $('#winner').append($('<p>').text(data.winner));
            
   let  gameBoard= data.chat;
   let size =  75
