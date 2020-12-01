@@ -1,0 +1,56 @@
+[
+  {
+  "id": 0,
+   "red": ["jotaro","red"],
+"yellow": ["joseph","yellow"],
+ "winner":  "",
+ "turn":["jotaro","red"],
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
+   "connect4": [
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ] ],
+  "record": 7,
+  "tape": 0,
+  "history": [
+     [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
+ [ 0, 0, 0, 0, 7, 0, 0 ],
+ [ 0, 0, 0, 6, 5, 0, 0 ],
+ [ 0, 0, 0, 4, 3, 0, 0 ],
+ [ 0, 0, 0, 2, 1, 0, 0 ] ]
+
+  },
+  {
+  "id": 1,
+   "red": ["jotaro","red"],
+   "yellow": ["jonathon","yellow"],
+   "winner":  "",
+ "turn": ["jotaro","red"],
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+"connect4": [
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "yellow", "red", "white", "white" ],
+  [ "white", "white", "white", "yellow", "red", "white", "white" ],
+  [ "white", "white", "white", "yellow", "red", "white", "white" ]
+],
+"record": 6,
+"tape": 0,
+"history": [
+   [ 0, 0, 0, 0, 0, 0, 0 ],
+[ 0, 0, 0, 0, 0, 0, 0 ],
+[ 0, 0, 0, 0, 0, 0, 0 ],
+[ 0, 0, 0, 6, 5, 0, 0 ],
+[ 0, 0, 0, 4, 3, 0, 0 ],
+[ 0, 0, 0, 2, 1, 0, 0 ] ]
+
+  }
+
+
+ ]

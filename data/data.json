@@ -1,0 +1,123 @@
+[
+  {
+  "name": "jonathon",
+  "pw":"123",
+  "status": "offline",
+
+  "games_played": [1],
+  "gameID": [1],
+
+  "games_active":[
+    {
+   "name": "jotaro",
+
+"colour": "yellow",
+"turn": 0,
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
+   "connect4": [
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ] ]
+  }
+  ],
+  "wins":2,
+  "total":4,
+  "friends":["jotaro"],
+  "friend_request":["noone","jojo"]
+  },
+  {
+  "name": "jo",
+  "pw":"123",
+  "status": "offline",
+  "gameID": [1],
+
+  "games_played": [],
+  "games_active":[  {
+
+   "name": "jotaro",
+"colour": "yellow",
+"turn": 0,
+"gameID": [0,1],
+
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+"connect4": [
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ],
+  [ "white", "white", "white", "white", "white", "white", "white" ]
+]
+  }
+
+  ],
+  "wins":5,
+  "total":6,
+  "friends":["Casear"],
+  "friend_request":["jotaro"]
+  },
+  {
+  "name": "joseph",
+  "pw":"123",
+  "status": "offline",
+
+  "gameID": [0],
+
+  "games_played": [1],
+  "games_active":[  {
+   "name": "jotaro",
+"colour": "yellow",
+"turn": 0,
+"chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
+   "connect4": [
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ]
+    ]
+  }
+    ],
+  "wins":5,
+  "total":6,
+  "friends":["Casear"],
+  "friend_request":["jotaro"]
+  },
+  {
+  "name": "jotaro",
+  "pw":"123",
+  "status": "offline",
+
+  "gameID": [0,1],
+
+  "games_played": ["Kars"],
+  "games_active":[  {
+   "name": "jonathon",
+      "colour": "red",
+
+      "turn": 1,
+      "chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
+
+   "connect4": [
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ],
+      [ "white", "white", "white", "white", "white", "white", "white" ]
+    ]
+  }
+    ],
+  "wins":8,
+  "total":8,
+  "friends":["Polnareff"],
+  "friend_request":["jo"]
+}
+
+ ]
