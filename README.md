@@ -9,8 +9,6 @@ Your server API does not always adhere to REST principles (inappropriate route m
 
 User Accounts::========================================================================================================================
 
-- Navigate to any of the friends' profiles: Missing. No links to profiles
-
 - Remove user from the friend list: Partial. Results in errors
 
 - Set profile to private / public: Missing. Cannot save changes
