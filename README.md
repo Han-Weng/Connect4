@@ -9,7 +9,6 @@ Your server API does not always adhere to REST principles (inappropriate route m
 
 User Accounts::========================================================================================================================
 
-- Set profile to private / public: Missing. Cannot save changes
 
 - Creating new games: Partial. Cannot specify visibility of the game (public / friends only / private)
 
