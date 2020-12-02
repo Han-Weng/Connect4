@@ -59,8 +59,9 @@
 
   <script>
   let  gameBoard=<%- JSON.stringify(data) %>;
-  let  record=<%- JSON.stringify(record) %>;
+  let  tape=<%- JSON.stringify(tape) %>;
   let size =  75
+  let turn  = <%- JSON.stringify(turn) %>;
   let diameter =  20
   console.log("the lenght is",  gameBoard )
   var canvas = document.getElementById("rr");
@@ -70,22 +71,32 @@
   for(var i = 0; i < gameBoard.length; i++){
     for(var j = 0; j < gameBoard[i].length; j++){
       ctx.fillStyle = "white";
-
-  if (gameBoard[i][j] <=record){
-    if (gameBoard[i][j] != 0 &&(gameBoard[i][j]%2 ==0)){
-      ctx.fillStyle = "red";
-    }else if((gameBoard[i][j] != 0 &&(gameBoard[i][j]%2 !=0))){
-      ctx.fillStyle = "yellow";
-    }
-  }else{
+  
+      if (gameBoard[i][j] <=tape){
+  if ((gameBoard[i][j] != 0) &&(gameBoard[i][j]%2 ==0)){
+    if(turn[1] == "yellow"){
+         ctx.fillStyle = "red";
+      }else if (turn[1] == "red"){
+        ctx.fillStyle = "yellow";
+      }
+       
+    }else if((gameBoard[i][j] != 0) &&(gameBoard[i][j]%2 !=0)){
+      if(turn[1] == "yellow"){
+         ctx.fillStyle = "yellow";
+      }else if (turn[1] == "red"){
+        ctx.fillStyle = "red";
+      }
+   }else{
       ctx.fillStyle = "white";
     }
-
+  }
+ 
      ctx.lineWidth = 2;
      ctx.beginPath();
      ctx.arc( size+ j*size,size+ i*size, diameter, 0, 2 * Math.PI);
      ctx.closePath();
      ctx.fill();
+ 
 }
   }
  </script>

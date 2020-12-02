@@ -81,11 +81,16 @@
                 <ul class="theme-list">
                   <form id="contact-form" method="POST" action='/watchgame' >
 
-                   <li class="list-item"> <%= data.games_played %> </li>
-                   <% for(var i = 0; i < JSON.stringify(data.games_played.length); i++){ %>
-                   <button class="btn btn-primary rounded-pill" name="name" value=<%=data.gameID[i]%>>
-                    <%=data.gameID[i]%>
+               
+                   <% for(var i = 0; i < JSON.stringify(map.length); i++){ %>
+                    <% if((map[i].red[0]==data.name||map[i].yellow[0]==data.name)&&(map[i].winner != "")){ %>
+                   <button class="btn btn-primary rounded-pill" name="name" value=<%=map[i].id%>>
+                    <%= map[i].id %>
                    </button>
+                   <p>Winner:  <%=  map[i].winner  %> </p>
+             
+
+                   <% } %>
                    <% } %>
 
                   </form>
