@@ -9,13 +9,9 @@ Your server API does not always adhere to REST principles (inappropriate route m
 
 User Accounts::========================================================================================================================
 
-- Remove user from the friend list: Partial. Results in errors
-
 - Set profile to private / public: Missing. Cannot save changes
 
 - Creating new games: Partial. Cannot specify visibility of the game (public / friends only / private)
-
-- View history of games played and watch the replay: Partial. Doesn't always work. Some games show up in both active and history
 
 Viewing a User Profile:========================================================================================================================
 
@@ -25,3 +21,6 @@ Viewing a User Profile:=========================================================
 
 
 Playing Games: Partial. Game doesn't end once the winner is determined, no support for forfeiting, doesn't update dynamically.
+set winner or something
+create game option
+Remove user from the friend list: Partial. Results in errors
