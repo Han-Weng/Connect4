@@ -20,7 +20,5 @@ Viewing a User Profile:=========================================================
 - View a summary of the last 5 games played: Partial. Does not properly display the winner
 
 
-Playing Games: Partial. Game doesn't end once the winner is determined, no support for forfeiting, doesn't update dynamically.
-set winner or something
 create game option
 Remove user from the friend list: Partial. Results in errors
