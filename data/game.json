@@ -3,10 +3,10 @@
   "id": 0,
    "red": ["jotaro","red"],
 "yellow": ["joseph","yellow"],
- "winner":  "red",
+ "winner":  "",
  "turn":["jotaro","red"],
 "chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
-
+"status":"friends-only",
    "connect4": [
       [ "white", "white", "white", "white", "white", "white", "white" ],
   [ "white", "white", "white", "white", "white", "white", "white" ],
@@ -16,10 +16,11 @@
   [ "white", "white", "white", "white", "white", "white", "white" ] ],
   "record": 7,
   "tape": 0,
+  "observers":[],
   "history": [
      [ 0, 0, 0, 0, 0, 0, 0 ],
  [ 0, 0, 0, 0, 0, 0, 0 ],
- [ 0, 0, 0, 0, 7, 0, 0 ],
+ [ 0, 0, 0, 0, 0, 0, 0 ],
  [ 0, 0, 0, 6, 5, 0, 0 ],
  [ 0, 0, 0, 4, 3, 0, 0 ],
  [ 0, 0, 0, 2, 1, 0, 0 ] ]
@@ -30,6 +31,7 @@
    "red": ["jotaro","red"],
    "yellow": ["jonathon","yellow"],
    "winner":  "",
+   "status":"friends-only",
  "turn": ["jotaro","red"],
 "chat":["jotaro","you suck","jonathon","no u","jonathon","die"],
 "connect4": [
@@ -42,6 +44,8 @@
 ],
 "record": 6,
 "tape": 0,
+"observers":[],
+
 "order": ["red","yellow"],
 "history": [
    [ 0, 0, 0, 0, 0, 0, 0 ],

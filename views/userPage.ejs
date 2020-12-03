@@ -39,17 +39,24 @@
                 <form id="contact-form" method="POST" action="/logout">
                   <button name="record" value=0 class="btn btn-primary rounded-pill">Logout  </button>
                 </form>
+                <form id="contact-form" method="POST" action="/privacy">
+                  <% if( data.public == "private"){ %>
+                       <button class="btn btn-primary rounded-pill" name="name" value=<%= data.name %>>Turn Private</button>
+                     <% }else{%>
+                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.name %>> Turn Public</button>
+                     <% }%>
+                </form>
 
-                <input type="checkbox" value="no"> <label for="no">private</label>
-                  <input type="checkbox" value="yes">  <label for="yes">public</label>
+                  <p>You are now in : <%= (data.public) %> Mode</p>
                   <div class="ml-auto my-2 my-lg-0">
                     <br>
 
                     <p>Search </p>
-                    <form id="contact-form" method="POST" action="/search">
+                    <form autocomplete="on" id="contact-form" method="POST" action="/search">
                     <label for="search"> Who do you want to search up</label>
-                    <input type="text" onfocus=this.value='' value="   " name ="user">
+                    <input type="text" onfocus=this.value='' value="   " name ="user" id="text">
                     <input type="submit" value="submit" class="btn btn-primary rounded-pill"/>
+                    <div id="names">asdfsd</div>
                   </form>
 
                   </div>
@@ -70,8 +77,14 @@
                 </ul>
                 <div class="ml-auto my-2 my-lg-0">
                   <form id="contact-form" method="POST" action='/creategame' >
+                    <input type="checkbox" class="radioCheck" id="public" name="status" value="public" onclick="check(this);">
+                    <label for="vehicle1"> Public</label><br>
+                    <input type="checkbox"class="radioCheck"  id="private" name="status" value="private" onclick="check(this);">
+                    <label for="vehicle2"> Private</label><br>
+                    <input type="checkbox" class="radioCheck" id="friendsonly" name="status" value="friendsonly" onclick="check(this);">
+                    <label for="vehicle3"> Friends Only</label><br> 
 
-                  <button name="record" value=0 class="btn btn-primary rounded-pill">Create Game</button>
+                  <button name="name" value=<%= data.name %> class="btn btn-primary rounded-pill">Create Game</button>
                 </form>
 
                   <p></p>
@@ -121,7 +134,7 @@
                   <li> <% for (var i =0; i<data.friends.length; i++){%>
                     <li > <%= data.friends[i] %> :<%= status[i] %>  </li>
   
-                   <form  method="POST" action='/friendRequest'>
+                   <form  method="POST" action='/viewFriend'>
                   <button class="btn btn-primary rounded-pill" name="user" value=<%= data.friends[i] %>  >View</button>
 
                    <!-- <li class="btn btn-primary rounded-pill" name="user" value=<%= data.friends[i] %>  >View</li> -->
@@ -130,9 +143,9 @@
                   <form id="contact-form" method="POST" action='/removeFriend' >
 
                     <button class="btn btn-primary rounded-pill" name="name" value=<%= data.friends[i] %>  >Remove</button>
-                      <% } %>
 
                     </form>
+                    <% } %>
 
                 </ul>
 
@@ -149,5 +162,65 @@
 
 
 </body>
+<script>
+    function check(input)
+  {
+    
+    var checkboxes = document.getElementsByClassName("radioCheck");
+    
+    for(var i = 0; i < checkboxes.length; i++)
+    {
+      //uncheck all
+      if(checkboxes[i].checked == true)
+      {
+        checkboxes[i].checked = false;
+      }
+    }
+    
+    //set checked of clicked object
+    if(input.checked == true)
+    {
+      input.checked = false;
+    }
+    else
+    {
+      input.checked = true;
+    }	
+  }
 
+  let x = 0;
+  var names = <%- JSON.stringify(names) %>;
+  console.log(names);
+
+  let req = null;
+  let box = document.getElementById("text");
+  box.oninput = getNames;
+
+  function getNames(){
+    //abort an existing request if there is one, why?
+    //(two reasons I can think of)
+    if(req !== null){
+      req.abort();
+    }else{
+      req = new XMLHttpRequest();
+      req.onreadystatechange = function() {
+        if(this.readyState==4 && this.status==200){
+          let div = document.getElementById("names");
+          div.innerHTML = ""; 
+          for(let i = 0; i <names.length; i++){
+            div.innerHTML += names[i] + "<br>";
+          }
+        }
+      }
+    }
+
+    //Making a GET request to a server on the local computer
+    //The resource requested is /names
+    //A query string is included specifying the search query
+    //The reponse should contain an object with a 'names' property
+    //The value of the 'names' property will be an array of strings
+    req.open("GET", `http://localhost:8080/users/${box.value}`);
+    req.send();
+  }
+</script>
 </html>
