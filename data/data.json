@@ -7,7 +7,7 @@
 
   "games_played": [],
   "gameID": [1],
-  "public": "private",
+  "public": "public",
 
   "games_active":[
     {
@@ -61,7 +61,7 @@
   ],
   "wins":5,
   "total":6,
-  "friends":["Casear"],
+  "friends":[],
   "friend_request":["jotaro"]
   },
   {
@@ -123,7 +123,7 @@
     ],
   "wins":8,
   "total":8,
-  "friends":["jonathon"],
+  "friends":[],
   "friend_request":["jo"]
 }
 
