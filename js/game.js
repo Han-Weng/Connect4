@@ -1,4 +1,11 @@
+var bodyParser = require('body-parser');
+var fs = require('fs');
 
+ var rawdata = fs.readFileSync('./data/data.json');
+ var rawgame = fs.readFileSync('./data/game.json');
+
+ var data = JSON.parse(rawdata);
+ var game = JSON.parse(rawgame);
 
 
 function chat(req,res){
@@ -8,41 +15,6 @@ function chat(req,res){
   res.redirect(req.get('referer'));;
 }
 
-function input(req, res){
-  var numbersOnly = (req.body.input).match(/[0-6]/);
-  var length = ((req.body.input).length);
-  var player=0
-  var playerColour=1
-  var map = games_active_array(req.body.array)
-
-  if ((map.connect4[0][req.body.input] != "white")||((numbersOnly == null)||(length >1)||((map.turn[player]!=req.session.name)))){
-    res.redirect(req.get('referer'));;
-    return 0;
-  }
-  for (var i = 5; i >= 0; i--) {
- 	  if (map.connect4[i][req.body.input] == "white"){
-			map.connect4[i][req.body.input] =  map.turn[playerColour]
-
-      console.log("so whats going on this time ", winnerAlgorithm(i,req.body.input,map.connect4))
-
-       map.winner  = winnerAlgorithm(i,req.body.input,map.connect4)
-
-      if (draw(map)=="draw"){
-         map.winner  = draw(map)
-        res.redirect(req.get('referer'));;
-      }
-        if (map.turn == map.yellow){
-         map.turn  = map.red
-         }else{
-          map.turn  = map.yellow
-        }
-      res.redirect(req.get('referer'));;
-			return 0
-		}
-	}
-  res.redirect(req.get('referer'));;
-
-}
 function draw(map){
   for (var i = 6; i >= 0; i--) {
     if (map.connect4[0][i] != "white"){
@@ -51,8 +23,31 @@ function draw(map){
   }
   return "  draw";
 }
-
+function archive(mapId, playerName){
+  //what to do name a player has done a game, idk why i named the player as map
+  map =doesExist(playerName);
+  map.total++;
+  console.log("oooiii"+playerName);
+  console.log("oooiii"+map);
+  for(var i = 0; i < map.gameID.length; i++) {
+    if ((mapId== map.gameID[i])){
+      map.gameID.splice(i, 1);  
+      map.games_played.push(mapId);
+      break; 
+    } 
+  } 
+}
+function findGamid(name){
+  //find a specific game
+  for(var i = 0; i <  game.length; i++){
+    if(game[i].id ==name ){
+      return game[i];
+    }
+ }
+ return 0;
+}
+ 
 
 module.exports ={
-    draw, input, chat
+    draw 
 }
