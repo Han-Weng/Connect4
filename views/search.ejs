@@ -39,12 +39,22 @@
               <div class="card-page mt-3">
                 <h3 class="mb-3">Viewing: <%= data %></h3>
 
-                <p><b>Active Games Click to View</p>
+                <p><b>Data Displayed</p>
 
                     <form id="contact-form" method="GET" action=<%=JSON.stringify(type)%> >
                      <ul>
+
                       <% for(var i = 0; i < JSON.stringify(data.length); i++){ %>
-                        <a href= <%=data[i]%>  > <%=  data[i]  %> </a> 
+                        <a href= <%=data[i]%>  > <%=  data[i]  %></a>
+                        <br>
+                        <% if ((players.length ==0)){%>
+                         players <%=  players[i]  %>
+                         <br>
+                         winners <%=  winners[i]  %>
+                         <br>
+                        <%}else{%>
+                          <p>Data link also includes player and game status</p>
+                          <%} %>
 
                         <!-- <button class="btn btn-primary rounded-pill" name="name" value=<%=data[i]%>> -->
                           <!-- <%=  data[i]  %> -->

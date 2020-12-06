@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="../assets/css/bootstrap.css">
 
   <link rel="stylesheet" href="../assets/css/mobster.css">
-
+  <meta http-equiv="refresh" content="7">
   <link rel="stylesheet" href="../login.css">
  </head>
 
@@ -29,8 +29,8 @@
 <h2>Game Between <%- yellowPlayer %> vs <%- redPlayer %></h2>
 
 
-<form id="inputForm"  >
-  <button name="array" value=<%= id %>>player move</button>
+<form  method="POST" action="/input">
+  <button name="id" value=<%= id %>>player move</button>
   <input type="text" id="input" name = "input" onfocus=this.value='' id="myText" value="">
 </form>
 
@@ -53,7 +53,9 @@
 </div>
 <div style=" border:6px solid rgb(60, 60, 94); background:white; float: left;" >
 
-  <form id = "chatForm" style="width:100%">
+  <!-- <form id = "chatForm" style="width:100%"> -->
+    <form method="POST" action="/chat"   >
+
     <% for(var i = 0; i < chat.length; i++){ %>
        <%if (i%2 ==0) { %>
         <p>  <%=  chat[i]  %>  : <%=  chat[1+i]  %></p>
@@ -73,7 +75,6 @@
   // handle the event sent with socket.send()
 
  
-
  
   $(function() {
    
@@ -89,31 +90,31 @@
 // handle the event sent with socket.emit()
 
 
-  $('form#chatForm').submit(function(e) {
+  // $('form#chatForm').submit(function(e) {
 
-     e.preventDefault(); // prevents page reloading
-      var data = { }
+  //    e.preventDefault(); // prevents page reloading
+  //     var data = { }
 
-      data.message = $('#m').val()
-      data.id =  <%- JSON.stringify(id) %>;
-      socket.emit('chat message', data);
-      $('#m').val('');
-      //return false;
-    });
+  //     data.message = $('#m').val()
+  //     data.id =  <%- JSON.stringify(id) %>;
+  //     socket.emit('chat message', data);
+  //     $('#m').val('');
+  //     //return false;
+  //   });
 
-  $('form#inputForm').submit(function(e) {
+  // $('form#inputForm').submit(function(e) {
     
-    e.preventDefault(); // prevents page reloading
-    var data = { }
-    data.input = $('#input').val()
-    data.id =  <%- JSON.stringify(id) %>;
+  //   e.preventDefault(); // prevents page reloading
+  //   var data = { }
+  //   data.input = $('#input').val()
+  //   data.id =  <%- JSON.stringify(id) %>;
 
-    socket.emit('game_send', data);
-    $('#input').val('');
-    console.log("messaged recievd");
+  //   socket.emit('game_send', data);
+  //   $('#input').val('');
+  //   console.log("messaged recievd");
 
-          return false;
-    });
+  //         return false;
+  //   });
     socket.on('users_count', function(data){
 
         $('#client_count').append($('<p>').text(data.name+" : "+data.chat));
