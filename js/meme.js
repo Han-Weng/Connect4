@@ -8,7 +8,7 @@ var fetch  = require('node-fetch');
      var json = await obj.json();
 
      var ass = json.data.children[random].data.url_overridden_by_dest
- 
+    console.log(ass)
      return  ass
  }
     load()
