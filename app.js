@@ -31,7 +31,7 @@ fs.readFile('data/data.json', 'utf8', function(err, contents) {
 });
 //some files exported so I wouldn't have too many lines of code but in the end, i just wrote more 
 //and didn't plan everything out 
-const {    draw ,archive  }  = require("./js/game.js")
+const {    draw   }  = require("./js/game.js")
 
 const {watchgame,next}  = require("./js/history.js");
 const { doesNotThrow } = require('assert');
@@ -753,10 +753,20 @@ function input(req, res){
 
        map.winner  = winnerAlgorithm(i,req.body.input,map.connect4)
        if (map.winner!=""){
+        // var index = doesExist(map.red[0]).gameID.indexOf(map.id);
+        // if (index > -1) {
+        //   doesExist(map.red[0]).gameID.splice(index, 1);
+        //   doesExist(map.red[0]).games_played.push(map.id)
+        // }
+        //   index = doesExist(map.yellow[0]).gameID.indexOf(map.id);
+        // if (index > -1) {
+        //   doesExist(map.yellow[0]).gameID.splice(index, 1);
+        //   doesExist(map.yellow[0]).games_played(map.id)
+        // }
         //if there is a winner or a draw the 
         map.tape = map.record;
-        archive(data.id,map.red[0]);
-        archive(data.id,map.yellow[0]);
+        archive(req.body.id,map.red[0]);
+        archive(req.body.id,map.yellow[0]);
         if(map.winner=="red"){
           map.winner=map.red
           doesExist(map.red[0]).wins++;
@@ -792,20 +802,27 @@ function chat(req,res){
   map.chat.push(req.body.chat)
  res.redirect(req.get('referer'));;
 }
-// function archive(mapId, playerName){
-//   //what to do name a player has done a game, idk why i named the player as map
-//   map =doesExist(playerName);
-//   map.total++;
-//   console.log("oooiii"+playerName);
-//   console.log("oooiii"+map);
-//   for(var i = 0; i < map.gameID.length; i++) {
-//     if ((mapId== map.gameID[i])){
-//       map.gameID.splice(i, 1);  
-//       map.games_played.push(mapId);
-//       break; 
-//     } 
-//   } 
-// }
+function archive(mapId, playerName){
+  //what to do name a player has done a game, idk why i named the player as map
+  map =doesExist(playerName);
+  map.total++;
+  console.log("oooiii"+playerName);
+  console.log("oooiii"+map);
+  console.log("oooiii"+mapId);
+
+  var   index = map.gameID.indexOf(mapId);
+  console.log("ssssssssss"+index);
+  for (var i=0; i<map.gameID.length; i++){
+    if(map.gameID[i]==mapId){
+        console.log(map.gameID[i]+" map.gameID")
+        map.gameID.splice(i, 1);
+        map.games_played.push(mapId); 
+        return 0;
+    }
+  }
+return 0;
+ 
+}
 
  
 

@@ -35,7 +35,7 @@
   "name": "jo",
   "pw":"123",
   "status": "offline",
-  "gameID": [1],
+  "gameID": [],
   "public": "private",
   "searchOpponent": "",
 
@@ -92,7 +92,7 @@
     ],
   "wins":5,
   "total":6,
-  "friends":["Casear"],
+  "friends":[],
   "friend_request":["jotaro"]
   },
   {
@@ -103,7 +103,7 @@
 
   "gameID": [0,1],
   "searchOpponent": "",
-  "games_played": [1],
+  "games_played": [],
   "games_active":[  {
    "name": "jonathon",
       "colour": "red",
