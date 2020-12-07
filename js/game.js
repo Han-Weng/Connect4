@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser');
 var fs = require('fs');
+const { winnerAlgorithm} =require('./connect4.js');
 
  var rawdata = fs.readFileSync('./data/data.json');
  var rawgame = fs.readFileSync('./data/game.json');
@@ -7,14 +8,22 @@ var fs = require('fs');
  var data = JSON.parse(rawdata);
  var game = JSON.parse(rawgame);
 
+ function doesExist(newUser){
+  //find a specific user
+  console.log("data,length"+  data.length)
 
-function chat(req,res){
-   var map = games_active_array(req.body.enemy)
-   map.chat.push(req.session.name)
-   map.chat.push(req.body.chat)
-  res.redirect(req.get('referer'));;
+	for(var i = 0; i < data.length; i++) {
+		console.log( data[i].name)
+ 		if (newUser.toLowerCase() === data[i].name.toLowerCase()){
+      console.log("newuser"+ data[i].name.toLowerCase())
+
+			return data[i] ;
+ 		}
+ }
+ console.log("doesn't exist");
+	return false;
 }
-
+ 
 function draw(map){
   for (var i = 6; i >= 0; i--) {
     if (map.connect4[0][i] != "white"){
@@ -37,6 +46,7 @@ function archive(mapId, playerName){
     } 
   } 
 }
+
 function findGamid(name){
   //find a specific game
   for(var i = 0; i <  game.length; i++){
@@ -49,5 +59,5 @@ function findGamid(name){
  
 
 module.exports ={
-    draw 
+    draw,archive 
 }

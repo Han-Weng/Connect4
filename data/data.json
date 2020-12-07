@@ -103,7 +103,7 @@
 
   "gameID": [0,1],
   "searchOpponent": "",
-  "games_played": ["Kars"],
+  "games_played": [1],
   "games_active":[  {
    "name": "jonathon",
       "colour": "red",

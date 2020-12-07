@@ -2,12 +2,14 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var ejs = require("ejs");
 var urlencoderParser = bodyParser.urlencoded({ extended: false});
-
- var app = express();
- var http = require('http').createServer(app);
- var socket = require("socket.io");
- var io = require('socket.io')(http);
- var fs = require('fs');
+var meme = require("./js/meme.js");
+var http = require('http').createServer(app);
+var fs = require('fs');
+var app = express();
+var session = require("express-session")({
+  secret: "my-secret",
+  maxAge: 24 * 60 * 60 * 1000 
+});
 
  var rawdata = fs.readFileSync('./data/data.json');
  var rawgame = fs.readFileSync('./data/game.json');
@@ -25,108 +27,37 @@ fs.readFile('data/data.json', 'utf8', function(err, contents) {
   }
   console.log(names);
 });
- var session = require("express-session")({
-  secret: "my-secret",
-  maxAge: 24 * 60 * 60 * 1000 
-});
+
 //some files exported so I wouldn't have too many lines of code but in the end, i just wrote more 
 //and didn't plan everything out 
-const { winnerAlgorithm, checkVertical, checkHorizontal, checkLeftDiagonal, checkRightDiagonal} =require('./js/connect4.js');
-const {draw }  = require("./js/game.js")
-const {watchgame}  = require("./js/history.js");
-const { doesNotThrow } = require('assert');
+const { draw ,archive  }  = require("./js/game.js")
+const {watchgame,next}  = require("./js/history.js");
+const { winnerAlgorithm} =require('./js/connect4.js');
 
 app.use(session ) 
-
+const io = require('socket.io')(http );
+var view = [];
 io.use(function(socket, next) { 
   session(socket.request, socket.request.res || {}, next);
 });  
 // io.emit('observers', data={observers:"map"} );
 
-io.on('connection', (socket) => {
-  // send a response to the webpage and tell it a user is in a game
-  io.sockets.emit('socketClientID', socket.request.session.name);
-  socket.on('hello_from_client', function(data){
-      console.log(data);
-  });
-//the main logic of the game board to drop the coin and to decide the winner
-  socket.on('gamesend', (data) => {
-    var numbersOnly = (data.input).match(/[0-6]/);
-    var length = ((data.input).length);
-    var playerColour=1
-    var map = findGamid(data.id) 
-  console.log(map.turn[0]+" =================== ");
-  console.log(socket.request.session.name+" =================== ");
-  console.log("map.winner"+map.winner)
-
-    //prevents additive moves from being made once users won
-    if ((map.winner.length!=0) ){
-      console.log("winner"+map.winner+"winner") 
-      return 0; 
-    } 
-    //stop any invalide moves
-    if ((map.connect4[0][data.input] != "white")||((numbersOnly == null)||(length >1)||((map.turn[0]!=socket.request.session.name )))){
-      console.log("invalided try again")
-      return 0; 
-    } 
-    //loop through the gameboard and check the empty slot to insert a coin
-    for (var i = 5; i >= 0; i--) {
-       if (map.connect4[i][data.input] == "white"){
-        map.history[i][data.input] = map.record++;
-        map.connect4[i][data.input] =  map.turn[playerColour]
-        map.winner  = winnerAlgorithm(i,data.input,map.connect4)
-        if (map.winner!=""){
-          //if there is a winner or a draw the 
-          map.tape = map.record;
-          archive(data.id,map.red[0]);
-          archive(data.id,map.yellow[0]);
-          if(map.winner=="red"){
-            map.winner==map.red[0]
-            doesExist(map.red[0]).wins++;
-          }else{
-            map.winner==map.yellow[0]
-            doesExist(map.yellow[0]).wins++;
-          }
-          console.log("emit");
-         //sends the data to the page  
-         io.sockets.emit('game_get', data={chat:map.connect4, input:data.input, winner:map.winner, stop:0,id:map.id,  } );
-        }     
-        if (draw(map)=="draw"){   
-           map.winner  = draw(map)      
-        }
-          if (map.turn == map.yellow){
-           map.turn  = map.red
-           }else{
-            map.turn  = map.yellow
-          } 
-          console.log("invalided try again")
-          io.sockets.emit('game_get', data={chat:map.connect4, input:data.input, winner:map.winner, stop:0,id:map.id,   } );
-      return 0;
-      }
-    }
-    io.sockets.emit('game_get', data={chat:map.connect4, input:data.input, winner:map.winner, stop:0,id:map.id,   } );
-    return 0;
-    });
-//this is where the messaging happens, we push the name and their messages too
-  socket.on('chat message', (msg) => {
-
-  var map = findGamid(msg.id)
-  if (map.winner !=""){
-    return 0;
-  } 
-  map.chat.push(socket.request.session.name)
-  map.chat.push(msg.message)
-  console.log('map: ' + map.chat);
-  io.sockets.emit('users_count', data={chat:msg.message, name:socket.request.session.name } );
-  }); 
+io.on('connection', socket => {
+  console.log('connect=====');
+  if (!view.includes(socket.request.session.name)){
+    view.push(socket.request.session.name)
+  }
+    socket.emit('hello', view );
   
-  // var map = socket.request.session.name
-//  map.observers.push(socket.request.session.name)
-  //
   socket.on('disconnect', () => {
+    const index = view.indexOf(socket.request.session.name);
+    if (index > -1) {
+      view.splice(index, 1);
+    }
     console.log('user disconnected'+ socket.request.session.name);
   });
-}); 
+ 
+});
  
 http.listen(8080, () => {
   console.log('listening on *:8080'); 
@@ -159,23 +90,29 @@ app.post("/watchgame",watchgame);
 app.post("/viewFriend", viewFriend);
 //game
 app.post("/quit", quit);
-friendRequest
+
 app.post("/friendRequest", friendRequest);
 
-//game ejs the game logics
-//app.post("/input", input);
-//app.post('/chat', chat)
 //history 
 app.post('/next', next);
 app.post('/privacy', privacy);
  
 app.get('/friendProfile', searchForUser);
-
-
+app.get('/easteregg', function(req,res){
+  console.log("ha you got ricked");
+  res.render( "easter_egg");
+});
 //here are the links for where to go for each route
-app.get('/login',  function(req,res){
-if(req.method ==='GET'){
-    res.render('login')
+app.get('/login',  async function(req,res){
+  //const {load }  = require("./js/game.js")
+  var meme = require("./js/meme.js");
+
+  var send = await meme.load() 
+
+if(req.method ==='GET'){ 
+  console.log(send )
+
+    res.render('login', {meme:send })
 }});
 app.get('/', function(req,res){
   res.render( "index");
@@ -196,7 +133,6 @@ app.get("/game/", function(req, res, next){
     if (game[i].status == "public"){
       string = "game/"+game[i].id
       viewGame.push(string)
-
     } else if((game[i].status == "friends-only")&&((isFriend(game[i].yellow[0], req.session.name)==true)||(isFriend(game[i].red[0], req.session.name)==true))){
       string = "game/"+game[i].id
       viewGame.push(string)
@@ -279,7 +215,44 @@ app.get("/game/:uid", function(req, res, next){
            redPlayer: findGamid(req.params.uid).red})
        return 0;
 }) 
+app.get("/watch/:uid", function(req, res, next){
+  //if you wanna view how the play game is played out 
+  if (findGamid(req.params.uid)==false){
+    res.redirect("/404");
+   return 0;
+ } 
+     console.log("Getting user with name: " + (req.params.uid));
+     res.render('history', {
+      tape : findGamid(req.params.uid).tape,
+      data : findGamid(req.params.uid).history,
+      chat : findGamid(req.params.uid).chat,
+      turn : findGamid(req.params.uid).turn,
+      id : findGamid(req.params.uid).id,
+      winner : findGamid(req.params.uid).winner,
+      game : findGamid(req.params.uid),
+      turn : findGamid(req.params.uid).turn,
+      yellowPlayer: findGamid(req.params.uid).yellow,
+      redPlayer: findGamid(req.params.uid).red})
+   return 0;
+  })
+app.get('/userPage', function(req,res){
+    //user page and displaying friends that are online or offline
+    console.log("this is the issue "+(JSON.stringify(req.session)));
+    friends = doesExist(req.session.name).friends
+    name = doesExist(req.session.name)
+    console.log("this is the name "+name);
+    console.log("this is the name "+data);
 
+    var status = []
+    for (var i = 0; i < friends.length; i++) {
+      if (doesExist(friends[i]).status == "online"){
+        status.push("online");
+      }else{
+        status.push("offline");
+      }
+    }
+    res.render("userPage", {data:doesExist(req.session.name), map:game, status: status, names:names});
+   });
 app.get("/games/", function(req, res, next){
   //same thing as /game, I realized i had to do /games so i rewrote everything
   var game = req.params.uid;
@@ -349,6 +322,52 @@ function userAndDone(name,done){
   return view;
 
 }
+function doesExist(newUser){
+  //find a specific user
+  console.log("data,length"+  data.length)
+
+	for(var i = 0; i < data.length; i++) {
+		console.log( data[i].name)
+ 		if (newUser.toLowerCase() === data[i].name.toLowerCase()){
+      console.log("newuser"+ data[i].name.toLowerCase())
+
+			return data[i] ;
+ 		}
+ }
+ console.log("doesn't exist");
+	return false;
+}
+function isFriend(newUser, friend){
+  //check if 2 guys are friends
+  console.log("yoffffffffffffffs" )
+
+   user = doesExist(newUser);
+	for(var i = 0; i < user.friends.length; i++) {
+		//console.log(user.friends[i])
+ 		if (friend.toLowerCase() === user.friends[i].toLowerCase()){
+      console.log("your friend is"+user.friends[i].toLowerCase())
+			return data[i] ;
+ 		}
+ }
+ console.log("not friends ");
+	return false;
+}
+
+// function archive(mapId, playerName){
+//   //what to do name a player has done a game, idk why i named the player as map
+//   map =doesExist(playerName);
+//   map.total++;
+//   console.log("oooiii"+playerName);
+//   console.log("oooiii"+map);
+//   for(var i = 0; i < map.gameID.length; i++) {
+//     if ((mapId== map.gameID[i])){
+//       map.gameID.splice(i, 1);  
+//       map.games_played.push(mapId);
+//       break; 
+//     } 
+//   } 
+// }
+
 function findUserGames(name){
   //if done var isnt specified
   var view  = [];
@@ -399,60 +418,45 @@ function allGames( ){
   return viewGame;
 
 }
-app.get("/watch/:uid", function(req, res, next){
-  //if you wanna view how the play game is played out 
-  if (findGamid(req.params.uid)==false){
-    res.redirect("/404");
-   return 0;
- } 
-//  if (findGamid(req.params.uid).winner==""){
-//   res.redirect("/404");
-//  return 0;
-// } 
-     console.log("Getting user with name: " + (req.params.uid));
-     res.render('history', {
-      tape : findGamid(req.params.uid).tape,
-      data : findGamid(req.params.uid).history,
-      chat : findGamid(req.params.uid).chat,
-      turn : findGamid(req.params.uid).turn,
-      id : findGamid(req.params.uid).id,
-      winner : findGamid(req.params.uid).winner,
-      game : findGamid(req.params.uid),
-      turn : findGamid(req.params.uid).turn,
-      yellowPlayer: findGamid(req.params.uid).yellow,
-      redPlayer: findGamid(req.params.uid).red})
-   return 0;
-  })
-  app.get('/userPage', function(req,res){
-    //user page and displaying friends that are online or offline
-    console.log("this is the issue "+(JSON.stringify(req.session)));
-    friends = doesExist(req.session.name).friends
-    name = doesExist(req.session.name)
-    console.log("this is the name "+name);
-    console.log("this is the name "+data);
+function matchGame(newUser){
+  //match user with a specific game type with new users 
+  console.log("data,length"+  data.length)
 
-    var status = []
-    for (var i = 0; i < friends.length; i++) {
-      if (doesExist(friends[i]).status == "online"){
-        status.push("online");
-      }else{
-        status.push("offline");
-      }
+	for(var i = 0; i < data.length; i++) {
+		console.log( data[i].searchOpponent)
+     if((newUser.toLowerCase() != data[i].name.toLowerCase())&&
+     (doesExist(newUser).searchOpponent==data[i].searchOpponent)){
+      console.log("newuser"+ data[i].name.toLowerCase())
+      doesExist(newUser).searchOpponent="";
+      data[i].searchOpponent=""
+			return data[i] ;
+ 		}
+ }
+ console.log("doesn't exist");
+	return false;
+
+}
+function findGamid(name){
+  //find a specific game
+  for(var i = 0; i <  game.length; i++){
+    if(game[i].id ==name ){
+      return game[i];
     }
-    res.render("userPage", {data:doesExist(req.session.name), map:game, status: status, names:names});
-   });
- function privacy(req,res){
-     //if you wanna switch the privacy mode
-    console.log(req.body);
-    var name = doesExist(req.body.name);
-    if (name.public == "public"){
-      name.public = "private";
-    }else if (name.public == "private"){
-      name.public = "public";
-    }
-    res.redirect(req.get('referer'));;
-    return 0;
+ }
+ return 0;
+}
+function privacy(req,res){
+  //if you wanna switch the privacy mode
+  console.log(req.body);
+  var name = doesExist(req.body.name);
+  if (name.public == "public"){
+    name.public = "private";
+  }else if (name.public == "private"){
+    name.public = "public";
   }
+  res.redirect(req.get('referer'));;
+  return 0;
+}
 function quit(req,res ){
   // to quit the game, didnt implement it so the opponent would also be ejected from the game
  var data = req.body;
@@ -476,35 +480,17 @@ function quit(req,res ){
 
 
         }     
-//logouts and reset the session or cookie
 function logout(req,res){
+//logouts and reset the session or cookie
+
   doesExist(req.session.name).status = "offline"
   req.session.name = "";
   req.session.pw=  "";
   res.redirect("/login")
 }
-function matchGame(newUser){
-  //match user with a specific game type with new users 
-  console.log("data,length"+  data.length)
-
-	for(var i = 0; i < data.length; i++) {
-		console.log( data[i].searchOpponent)
-     if((newUser.toLowerCase() != data[i].name.toLowerCase())&&
-     (doesExist(newUser).searchOpponent==data[i].searchOpponent)){
-      console.log("newuser"+ data[i].name.toLowerCase())
-      doesExist(newUser).searchOpponent="";
-      data[i].searchOpponent=""
-			return data[i] ;
- 		}
- }
- console.log("doesn't exist");
-	return false;
-
-
-
-}
-//assign the user with a random other and create a new game with new id
 function creategame(req,res){
+//assign the user with a random other and create a new game with new id
+
   // if the 2 playters are found then create a new game and id
   console.log(req.body)
   doesExist(req.body.name).searchOpponent = req.body.status;
@@ -556,25 +542,6 @@ function creategame(req,res){
  return 0;
 
 }
-function next(req,res){
-  //given the history of a game you click next or prev to see what was
-//made at what position, if the user passes next too much
-  var next =(req.body.next).substring(0, 4);
-  var id =(req.body.next).substring(4);
-  console.log("this data is ",id)
-  console.log("this tape is ",findGamid(id).tape)
-
-  console.log("this record is ",findGamid(id).record)
-
- 
-   if ((next == "next")&&(findGamid(id).tape !=findGamid(id).record )){
-    findGamid(id).tape++
-  }else if ((next == "prev")&&((findGamid(id).tape !=0))){
-    console.log(req.body.next)
-    findGamid(id).tape--
-  }
-  res.redirect(req.get('referer'));;
-}
 function playgame(req, res){
   //here if someone wants to watch a game they will be direct to a game with that
 //specifc req id
@@ -588,15 +555,6 @@ function playgame(req, res){
      }
   }
   console.log("data is ....", req.body)
-}
-function findGamid(name){
-  //find a specific game
-  for(var i = 0; i <  game.length; i++){
-    if(game[i].id ==name ){
-      return game[i];
-    }
- }
- return 0;
 }
 function removeFriend(req, res){
   //to remove friends, a TA checkin 3 said there was a error bug but i was unable to find the said bug
@@ -716,36 +674,7 @@ data.forEach(d => {
   });
 
  }
-function isFriend(newUser, friend){
-  //check if 2 guys are friends
-  console.log("yoffffffffffffffs" )
 
-   user = doesExist(newUser);
-	for(var i = 0; i < user.friends.length; i++) {
-		//console.log(user.friends[i])
- 		if (friend.toLowerCase() === user.friends[i].toLowerCase()){
-      console.log("your friend is"+user.friends[i].toLowerCase())
-			return data[i] ;
- 		}
- }
- console.log("not friends ");
-	return false;
-}
-function doesExist(newUser){
-  //find a specific user
-  console.log("data,length"+  data.length)
-
-	for(var i = 0; i < data.length; i++) {
-		console.log( data[i].name)
- 		if (newUser.toLowerCase() === data[i].name.toLowerCase()){
-      console.log("newuser"+ data[i].name.toLowerCase())
-
-			return data[i] ;
- 		}
- }
- console.log("doesn't exist");
-	return false;
-}
 function loginUser(req,res){
 //log the user in 
 	let newUser  =  req.body;
@@ -814,38 +743,21 @@ function createUser(req,res){
     }
   
 } 
-function archive(mapId, playerName){
-  //what to do name a player has done a game, idk why i named the player as map
-  map =doesExist(playerName);
-  map.total++;
-  console.log("oooiii"+playerName);
-  console.log("oooiii"+map);
-  for(var i = 0; i < map.gameID.length; i++) {
-    if ((mapId== map.gameID[i])){
-      map.gameID.splice(i, 1);  
-      map.games_played.push(mapId);
-      break; 
-    } 
-  } 
-}
-
- 
-
 function input(req, res){
   var numbersOnly = (req.body.input).match(/[0-6]/);
   var length = ((req.body.input).length);
   var player=0
   var playerColour=1
   var map = findGamid(req.body.id) 
-  if ((map.connect4[0][req.body.input] != "white")||((numbersOnly == null)||(length >1)||((map.turn[player]!=req.session.name)))){
-    console.log("=================={"+req.body)
-
+  if ((map.connect4[0][req.body.input] != "white")||((numbersOnly == null)||(length >1)||((map.turn[0]!=req.session.name)))){
+ 
     res.redirect(req.get('referer'));;
     return 0;
   }
   for (var i = 5; i >= 0; i--) {
  	  if (map.connect4[i][req.body.input] == "white"){
 			map.connect4[i][req.body.input] =  map.turn[playerColour]
+			map.history[i][req.body.input] =  map.record++;
 
       console.log("so whats going on this time ", winnerAlgorithm(i,req.body.input,map.connect4))
 
@@ -856,19 +768,20 @@ function input(req, res){
         archive(data.id,map.red[0]);
         archive(data.id,map.yellow[0]);
         if(map.winner=="red"){
-          map.winner==map.red[0]
+          map.winner=map.red
           doesExist(map.red[0]).wins++;
         }else{
-          map.winner==map.yellow[0]
+          map.winner=map.yellow
           doesExist(map.yellow[0]).wins++;
         }
         console.log("emit");
        //sends the data to the page  
-       res.redirect(req.get('referer'));;
+    
       }   
       if (draw(map)=="draw"){
          map.winner  = draw(map)
-        res.redirect(req.get('referer'));;
+        res.redirect(req.get('referer'));
+        return 0;
       }
         if (map.turn == map.yellow){
          map.turn  = map.red
@@ -880,13 +793,15 @@ function input(req, res){
 		}
 	}
   res.redirect(req.get('referer'));;
+  return 0
 
 }
- 
-
 function chat(req,res){
   var map = findGamid(req.body.enemy)
   map.chat.push(req.session.name)
   map.chat.push(req.body.chat)
  res.redirect(req.get('referer'));;
 }
+ 
+
+

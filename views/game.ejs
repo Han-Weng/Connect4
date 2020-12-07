@@ -39,10 +39,11 @@
 </form>
 
 
-<p  >It is <%= turn  %> </p>
+<p  >It is <%= turn  %>  turn</p>
 <p id="winner" >The winner is currenty <%= winner %>  </p>
+<ul id="events"></ul>
 <p id="observers" >Viewers are <%= observers %>   </p>
-<p id="greetings" >    </p>
+
 <p id="message" >    </p>
 
 <p id="observers"></p>
@@ -68,23 +69,35 @@
   </form>
  </div>
  <script src="/socket.io/socket.io.js"></script>
- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script>
+ <script>
    // either with send()
 
   // handle the event sent with socket.send()
 
- 
- 
-  $(function() {
-   
- var socket = io();
- socket.on('socketClientID', function (socketClientID) {
-    console.log('Connection to server established. SocketID is',socketClientID);
-    //socket.emit('hello_from_client', 123);
-    $('#greetings').append($('<p>').text( socketClientID));
+  const $events = document.getElementById('events');
 
+const newItem = (content) => {
+  const item = document.createElement('li');
+  item.innerText = content;
+  return item;
+};
+
+const socket = io();
+
+// socket.on('connect', () => {
+//   $events.appendChild(newItem('connect'));
+// });
+socket.on('hello', (counter) => {
+  $events.appendChild(newItem(`  ${counter}`));
 });
+//   $(function() {
+   
+//  var socket = io();
+//  socket.on('socketClientID', function (socketClientID) {
+//     console.log('Connection to server established. SocketID is',socketClientID);
+//     //socket.emit('hello_from_client', 123);
+//     $('#greetings').append($('<p>').text( socketClientID));
+// });
  
 
 // handle the event sent with socket.emit()
@@ -115,45 +128,45 @@
 
   //         return false;
   //   });
-    socket.on('users_count', function(data){
+//     socket.on('users_count', function(data){
 
-        $('#client_count').append($('<p>').text(data.name+" : "+data.chat));
-    });
+//         $('#client_count').append($('<p>').text(data.name+" : "+data.chat));
+//     });
 
-    socket.on('game_get', function(data){
+//     socket.on('game_get', function(data){
       
-    //   if (JSIN.stringify(winner != "undefine"){
-    //   window.location.href = "userPage.ejs";
-    // }
-    // console.log(data.winner);
-    // if (data.winner !=""){
-    //       window.location.replace("/userPage");
-    // }
-       $('#winner').append($('<p>').text(data.winner));
+//     //   if (JSIN.stringify(winner != "undefine"){
+//     //   window.location.href = "userPage.ejs";
+//     // }
+//     // console.log(data.winner);
+//     // if (data.winner !=""){
+//     //       window.location.replace("/userPage");
+//     // }
+//        $('#winner').append($('<p>').text(data.winner));
            
-  let  gameBoard= data.chat;
-  let size =  75
-  let diameter =  20
-  console.log("the lenght is",  gameBoard )
-  var canvas = document.getElementById("rr");
-  var ctx = canvas.getContext("2d");
-  var x= -1;
-  var y= -1;
-  for(var i = 0; i < gameBoard.length; i++){
-    for(var j = 0; j < gameBoard[i].length; j++){
+//   let  gameBoard= data.chat;
+//   let size =  75
+//   let diameter =  20
+//   console.log("the lenght is",  gameBoard )
+//   var canvas = document.getElementById("rr");
+//   var ctx = canvas.getContext("2d");
+//   var x= -1;
+//   var y= -1;
+//   for(var i = 0; i < gameBoard.length; i++){
+//     for(var j = 0; j < gameBoard[i].length; j++){
 
-      ctx.lineWidth = 2;
-     ctx.fillStyle = gameBoard[i][j];
-     ctx.beginPath();
-     ctx.arc( size+ j*size,size+ i*size, diameter, 0, 2 * Math.PI);
-     ctx.closePath();
-     ctx.fill();
-}
-  }
+//       ctx.lineWidth = 2;
+//      ctx.fillStyle = gameBoard[i][j];
+//      ctx.beginPath();
+//      ctx.arc( size+ j*size,size+ i*size, diameter, 0, 2 * Math.PI);
+//      ctx.closePath();
+//      ctx.fill();
+// }
+//   }
  
-});
+// });
  
-  });
+//   });
 
   </script>
 
