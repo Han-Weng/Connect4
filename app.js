@@ -37,7 +37,7 @@ require("./js/users.js");
 const {watchgame,next}  = require("./js/history.js");
 const {removeFriend,requestResponse,friendRequest,viewFriend,isFriend} = require("./js/friends.js");
 
-http.listen(3000, () => {
+http.listen(5000, () => {
   console.log('listening on *:8080'); 
 }); 
 
