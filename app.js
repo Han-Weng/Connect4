@@ -41,7 +41,7 @@ http.listen(3000, () => {
   console.log('listening on *:8080'); 
 }); 
 
-const Piece = require('/js/piece.js');
+const Piece = require('./js/piece.js');
 
 
 app.use(session ) 
