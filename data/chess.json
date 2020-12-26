@@ -1,0 +1,52 @@
+[
+{
+    "white":[
+    {
+      "name":"horseL",
+      "x":1,
+      "y":7,
+      "colour": "white",
+      "options":[]
+    },    {
+      "name":" R",
+      "x":7,
+      "y":7,
+      "colour": "white",
+      "options":[]
+    },
+    {
+      "name":" rookL",
+      "x":0,
+      "y":7,
+      "colour": "white",
+      "options":[]
+    },    {
+      "name":" rookR",
+      "x":8,
+      "y":7,
+      "colour": "white",
+      "options":[]
+    },
+    {
+      "name":" bishopL",
+      "x": 3,
+      "y": 7,
+      "colour": "white",
+      "options":[]
+    },    {
+      "name":" bishopR",
+      "x": 7,
+      "y": 8,
+      "colour": "white",
+      "options":[]
+    }  
+    ]
+},
+{
+      "black":[
+
+
+  ]
+}
+
+]

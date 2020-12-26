@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <link rel="shortcut icon" href="../assets/favicon.png" type="image/x-icon">
+
+  <link rel="stylesheet" href="../assets/css/maicons.css">
+
+  <link rel="stylesheet" href="../assets/vendor/animate/animate.css">
+
+  <link rel="stylesheet" href="../assets/vendor/owl-carousel/css/owl.carousel.min.css">
+
+  <link rel="stylesheet" href="../assets/css/bootstrap.css">
+
+  <link rel="stylesheet" href="../assets/css/mobster.css">
+ 
+  <link rel="stylesheet" href="../login.css">
+ </head>
+
+<body>
+  <div   class="page-hero-section bg-image hero-mini"  style="background-image: url(../assets/img/hero_mini.svg);">
+ 
+
+<ul id="events"></ul>
+
+<p id="winner" >  </p>
+<p id="observers" >   </p>
+
+<div   style=" background:white border:6px  width: 600px; float: left;">
+
+<canvas id="rr"  width="800" height="800" style="background-color:grey;"></canvas>
+</div>
+
+
+<script src="chess.js">  
+
+// function testing(){
+//     var canvas = document.getElementById("rr");
+//     var pieces = {
+//   }
+//     var board =  8;
+//     let size =  75;
+//     let diameter =  20;
+//     var ctx = canvas.getContext("2d");
+//     var x= -1;
+//     var y= -1;
+//     for(var i = 0; i <8; i++){
+//       for(var j = 0; j < 8; j++){
+//         ctx.lineWidth = 2;
+//         if (((1+i)+(j+1))%2 == 0){
+//         ctx.fillStyle = "black";
+//         }else{
+//         ctx.fillStyle = "white";
+//           }
+//       ctx.beginPath();
+//       ctx.fillRect( size+ i*size,size+ j*size, size,size);
+//       ctx.stroke();   
+//       }
+//     }
+//     ctx.fillStyle = "red";
+//     // ctx.fillText(data.white.pieces[0].name,
+//     // size+10+ pieces.white.pieces[0].x*size,
+//     // size/2+ pieces.white.pieces[0].y*size);
+//     canvas.onclick = function() {
+//     document.getElementById("observers").innerHTML = event.offsetX + "the off set stuff" +event.offsetY ;
+//     document.getElementById("winner").innerHTML = data.white.pieces[0]
+  
+//     }
+     
+// }
+   
+   
+ </script>
+<div>
+
+</body>
+</html>
