@@ -2,7 +2,7 @@
   "name": "connect4",
   "version": "1.0.0",
   "description": "1. HTML",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "main": "app.js",
