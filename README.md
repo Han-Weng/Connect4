@@ -21,3 +21,4 @@ Viewing a User Profile:=========================================================
 
 create game option
 Remove user from the friend list: Partial. Results in errors
+
